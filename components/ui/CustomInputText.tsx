@@ -8,6 +8,7 @@ export interface CustomInputTextProps {
   placeholder?: string;
   multiline?: boolean;
   numberOfLines?: number;
+  secureTextEntry?: boolean;
   keyboardType?:
     | "default"
     | "numeric"
@@ -32,6 +33,7 @@ export const CustomInputText: React.FC<CustomInputTextProps> = ({
   keyboardType = "default",
   multiline = false,
   numberOfLines = 1,
+  secureTextEntry = false,
 }) => {
   return (
     <View className="flex flex-col space-y-2 mb-4">
@@ -49,6 +51,8 @@ export const CustomInputText: React.FC<CustomInputTextProps> = ({
         keyboardType={keyboardType}
         multiline={multiline}
         numberOfLines={numberOfLines}
+        placeholderTextColor={"#a3a3a3"}
+        secureTextEntry={secureTextEntry}
       />
     </View>
   );

@@ -10,8 +10,12 @@ import {
 import { Inter } from "@/constants/Fonts";
 import { Feather } from "@expo/vector-icons";
 import { CustomInputText } from "@/components/ui/CustomInputText";
+import { useNavigation } from "expo-router";
 
-export default function EditScreen() {
+export default function AddAnimalScreen() {
+  useNavigation().setOptions({
+    headerShown: false,
+  });
   return (
     <SafeAreaView>
       <KeyboardAvoidingView className="px-4 pt-8 flex flex-col h-screen">
@@ -66,6 +70,7 @@ export default function EditScreen() {
                 style={Inter}
                 value={""}
                 onChangeText={() => {}}
+                placeholderTextColor={"#a3a3a3"}
               />
               <View className="w-full flex flex-row justify-between mb-2 items-center">
                 <TextInput
@@ -74,6 +79,7 @@ export default function EditScreen() {
                   style={Inter}
                   value={""}
                   onChangeText={() => {}}
+                  placeholderTextColor={"#a3a3a3"}
                 />
                 <TextInput
                   className="w-[49%] bg-white border border-neutral-200 rounded-lg px-4 py-2 h-12"
@@ -81,6 +87,7 @@ export default function EditScreen() {
                   style={Inter}
                   value={""}
                   onChangeText={() => {}}
+                  placeholderTextColor={"#a3a3a3"}
                 />
               </View>
               <View className="flex flex-row justify-between items-center my-2">

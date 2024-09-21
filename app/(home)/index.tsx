@@ -1,8 +1,7 @@
 import { Image, Text, SafeAreaView, View, ScrollView } from "react-native";
 import { Inter } from "@/constants/Fonts";
-import { Card, CardContainer } from "@/components/ui/Card";
-import { Ionicons } from "@expo/vector-icons";
-import { Screen } from "react-native-screens";
+import { Card } from "@/components/ui/Card";
+import { Link, useNavigation } from "expo-router";
 
 interface Greet {
   time: string;
@@ -11,6 +10,9 @@ interface Greet {
 }
 
 export default function HomeScreen() {
+  useNavigation().setOptions({
+    headerShown: false,
+  });
   const now = new Date();
   let greet: Greet;
   if (now.getHours() < 12) {
@@ -56,14 +58,16 @@ export default function HomeScreen() {
               Ghufron Akbar
             </Text>
           </View>
-          <Image
-            source={{
-              uri: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541",
-            }}
-            width={49}
-            height={49}
-            className="rounded-full h-full aspect-square object-cover"
-          />
+          <Link href="/profile">
+            <Image
+              source={{
+                uri: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541",
+              }}
+              width={49}
+              height={49}
+              className="rounded-full h-full aspect-square object-cover"
+            />
+          </Link>
         </View>
         <View className="flex flex-col space-y-2">
           <Text className="text-black text-4xl" style={Inter}>
@@ -73,21 +77,21 @@ export default function HomeScreen() {
             {greet.second}
           </Text>
         </View>
-        <View className="bg-white border border-neutral-200 rounded-xl p-4 flex flex-row justify-around">
+        <View className="bg-custom-1 border border-neutral-200 rounded-xl p-4 flex flex-row justify-around">
           <View className="flex flex-col gap-2 justify-center items-center  w-[40%]">
-            <Text className="text-neutral-600 font-medium" style={Inter}>
+            <Text className="text-white font-medium" style={Inter}>
               Total Kontribusi
             </Text>
-            <Text className="text-4xl font-semibold" style={Inter}>
+            <Text className="text-white text-4xl font-semibold" style={Inter}>
               20
             </Text>
           </View>
           <View className="w-px h-16 bg-neutral-200" />
-          <View className="flex flex-col gap-2 justify-center items-center w-[40%]">
-            <Text className="text-neutral-600 font-medium" style={Inter}>
+          <View className="flex flex-col gap-2 justify-center items-center w-[40%] ">
+            <Text className="text-white font-medium" style={Inter}>
               Minggu Ini
             </Text>
-            <Text className="text-4xl font-semibold" style={Inter}>
+            <Text className="text-white text-4xl font-semibold" style={Inter}>
               20
             </Text>
           </View>
@@ -97,12 +101,13 @@ export default function HomeScreen() {
             <Text className="text-black text-xl font-semibold" style={Inter}>
               Riwayat Kontribusi
             </Text>
-            <Text className="text-custom-1 text-base" style={Inter}>
-              Lihat Semua
-            </Text>
+            <Link href={"/(home)/history"}>
+              <Text className="text-custom-1 text-base" style={Inter}>
+                Lihat Semua
+              </Text>
+            </Link>
           </View>
           <ScrollView horizontal>
-            <Card />
             <Card />
             <Card />
             <Card />
