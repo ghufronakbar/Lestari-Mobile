@@ -1,132 +1,131 @@
-import { Image, StyleSheet, Platform, View, Text } from "react-native";
-
-import { HelloWave } from "@/components/HelloWave";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import { Inter } from "@/constants/Fonts";
 import {
-  AntDesign,
-  Entypo,
-  FontAwesome6,
-  Ionicons,
-  MaterialCommunityIcons,
-  Octicons,
-} from "@expo/vector-icons";
+  Image,
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  TextInput,
+  KeyboardAvoidingView,
+} from "react-native";
+import { Inter } from "@/constants/Fonts";
+import { Feather } from "@expo/vector-icons";
+import { CustomInputText } from "@/components/ui/CustomInputText";
 
-export default function DetailScreen() {
+export default function EditScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#FAFAFA", dark: "#1D3D47" }}
-      headerImage={
-        <Image
-          source={{
-            uri: "https://ragunanzoo.jakarta.go.id/wp-content/uploads/2022/08/cendrawasih1-1024x682.jpg",
-          }}
-          className="w-full h-full object-cover"
-        />
-      }
-    >
-      <View className="space-y-4">
-        <View className="flex flex-row justify-between">
-          <View className="flex flex-col max-w-[90%]">
-            <Text className="text-3xl text-black font-bold" style={Inter}>
-              Nama Lokal
-            </Text>
-            <Text
-              className="text-lg text-neutral-600 font-semibold"
-              style={Inter}
-            >
-              Nama Latin
+    <SafeAreaView>
+      <KeyboardAvoidingView className="px-4 pt-8 flex flex-col h-screen">
+        <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
+          Input Satwa
+        </Text>
+        <ScrollView className="mt-8 space-y-4">
+          <View className="w-full h-40 rounded-lg border-2 border-neutral-300 overflow-hidden shadow-sm">
+            <Image
+              source={{ uri: "https://i.sstatic.net/y9DpT.jpg" }}
+              className="w-full h-full object-cover"
+            />
+          </View>
+          <View className="w-[40%] bg-custom-1 px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2 self-end">
+            <Text className="text-sm text-white text-center" style={Inter}>
+              Unggah Gambar
             </Text>
           </View>
-          <MaterialCommunityIcons
-            name="circle-edit-outline"
-            size={24}
-            color="black"
-          />
-        </View>
-        <View className="flex flex-row space-x-1">
-          <View className="flex flex-row gap-1 items-center mr-1">
-            <FontAwesome6 name="envira" size={18} color="#42b968" />
-            <Text className="text-sm text-black">Habitat</Text>
+          <View className="flex flex-col">
+            <CustomInputText
+              label="Nama Lokal"
+              placeholder="Masukkan Nama Lokal"
+              onChangeText={() => {}}
+              value=""
+            />
+            <CustomInputText
+              label="Nama Latin"
+              placeholder="Masukkan Nama Latin"
+              onChangeText={() => {}}
+              value=""
+            />
+            <CustomInputText
+              label="Jumlah Ditemukan"
+              placeholder="Masukkan Jumlah Ditemukan"
+              onChangeText={() => {}}
+              value=""
+              keyboardType="numeric"
+            />
+            <CustomInputText
+              label="Habitat"
+              placeholder="Masukkan Habitat Ditemukan"
+              onChangeText={() => {}}
+              value=""
+            />
+            <View className="flex flex-col space-y-2 mb-4">
+              <Text className="text-black text-lg font-medium" style={Inter}>
+                Lokasi
+              </Text>
+              <TextInput
+                className="w-full bg-white border border-neutral-200 rounded-l-lg px-4 py-2 h-12"
+                placeholder={"Masukkan Kota Ditemukan"}
+                style={Inter}
+                value={""}
+                onChangeText={() => {}}
+              />
+              <View className="w-full flex flex-row justify-between mb-2 items-center">
+                <TextInput
+                  className="w-[49%] bg-white border border-neutral-200 rounded-lg px-4 py-2 h-12"
+                  placeholder={"Latitude"}
+                  style={Inter}
+                  value={""}
+                  onChangeText={() => {}}
+                />
+                <TextInput
+                  className="w-[49%] bg-white border border-neutral-200 rounded-lg px-4 py-2 h-12"
+                  placeholder={"Longitude"}
+                  style={Inter}
+                  value={""}
+                  onChangeText={() => {}}
+                />
+              </View>
+              <View className="flex flex-row justify-between items-center my-2">
+                <View className="h-px w-[30%] bg-neutral-200" />
+                <Text style={Inter}>Atau Gunakan</Text>
+                <View className="h-px w-[30%] bg-neutral-200" />
+              </View>
+              <View className="w-full flex flex-row justify-between mb-4">
+                <View className="bg-custom-success w-[48%] px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2">
+                  <Feather name="map-pin" color="white" />
+                  <Text
+                    className="text-sm text-white text-center"
+                    style={Inter}
+                  >
+                    Lokasi Saat Ini
+                  </Text>
+                </View>
+                <View className="bg-custom-info w-[48%] px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2">
+                  <Feather name="map" color="white" />
+                  <Text
+                    className="text-sm text-white text-center"
+                    style={Inter}
+                  >
+                    Buka Map
+                  </Text>
+                </View>
+              </View>
+              <CustomInputText
+                label="Deskripsi"
+                placeholder="Deskrpisikan Satwa Ditemukan"
+                onChangeText={() => {}}
+                value=""
+                numberOfLines={10}
+                multiline
+              />
+              <View className="bg-custom-1 px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2">
+                <Text className="text-sm text-white text-center" style={Inter}>
+                  Simpan
+                </Text>
+              </View>
+            </View>
           </View>
-          <Entypo name="dot-single" size={18} color="black" />
-          <View className="flex flex-row gap-1 items-center mr-1">
-            <Ionicons name="location" size={18} color="#8cc5ff" />
-            <Text className="text-sm text-black">Lokasi</Text>
-          </View>
-          <Entypo name="dot-single" size={18} color="black" />
-          <View className="flex flex-row gap-1 items-center">
-            <Octicons name="number" size={18} color="#fcaea4" />
-            <Text className="text-sm text-black">3 Ekor</Text>
-          </View>
-        </View>
-        <View className="flex flex-row border border-neutral-200 rounded-xl p-2 space-x-4 items-center">
-          <Image source={{ uri: "https://picsum.photos/200/300" }} className="w-[18%] aspect-square rounded-full object-cover" />
-          <View className="flex flex-col max-w-[74%]">            
-            <Text className="text-black text-lg font-semibold" style={Inter} numberOfLines={1}>Ghufron Akbar Ghufron Akbar Ghufron Akbar </Text>
-            <Text className="text-neutral-600 text-sm" style={Inter} numberOfLines={1}>lanstheprodigy@gmail.com</Text>
-          </View>
-        </View>
-        <View className="flex flex-col space-y-2">
-          <Text className="text-black text-lg font-semibold" style={Inter}>
-            Detail Data Satwa
-          </Text>
-          <View>
-            <Text className="text-black text-base font-semibold" style={Inter}>
-              Ditemukan Pada:
-            </Text>
-            <Text
-              className="text-neutral-600 text-base font-semibold"
-              style={Inter}
-            >
-              Selasa, 23 Februari 2022
-            </Text>
-          </View>
-          <View>
-            <Text className="text-black text-base font-semibold" style={Inter}>
-              Titik Koordinat:
-            </Text>
-            <Text
-              className="text-neutral-600 text-base font-semibold"
-              style={Inter}
-            >
-              2395325, 3253052
-            </Text>
-          </View>
-          <View>
-            <Text className="text-black text-base font-semibold" style={Inter}>
-              Deskripsi:
-            </Text>
-            <Text
-              className="text-neutral-600 text-base font-semibold"
-              style={Inter}
-            >
-               Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officiis veritatis, neque fugit quisquam illo, voluptas doloremque quam, corrupti dolor ipsa architecto itaque? Repellat vitae sequi minus ut dignissimos placeat, iusto maiores, maxime odit, doloremque sunt! Consequuntur odit voluptate aut unde corrupti nihil a saepe suscipit aliquam. Officia nesciunt vero rem ea consequatur enim iusto suscipit quis magnam illum! Cumque, tempora obcaecati voluptas error quis expedita perferendis consectetur fugiat facere sed at quae omnis iure eum. Vel distinctio soluta cupiditate necessitatibus iure odit. Neque rem mollitia excepturi magnam, esse adipisci necessitatibus, eius debitis incidunt deleniti itaque odio rerum doloremque dolores quae?
-            </Text>
-          </View>          
-        </View>
-      </View>
-    </ParallaxScrollView>
+          <View className="h-96" />
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: "absolute",
-  },
-});

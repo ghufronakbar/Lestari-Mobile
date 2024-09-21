@@ -1,45 +1,53 @@
-import {
-  Image,
-  StyleSheet,
-  Platform,
-  Text,
-  SafeAreaView,
-  View,
-  ScrollView,
-} from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { HelloWave } from "@/components/HelloWave";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import { useEffect } from "react";
-import { useFonts } from "expo-font";
-import { SplashScreen } from "expo-router";
+import { Image, Text, SafeAreaView, View, ScrollView } from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { Card, CardContainer } from "@/components/ui/Card";
+import { Ionicons } from "@expo/vector-icons";
+import { Screen } from "react-native-screens";
+
+interface Greet {
+  time: string;
+  first: string;
+  second: string;
+}
 
 export default function HomeScreen() {
   const now = new Date();
-  let greet: string = "Selamat ";
+  let greet: Greet;
   if (now.getHours() < 12) {
-    greet += "Pagi";
+    greet = {
+      time: "Selamat Pagi",
+      first: "Semangat Beraktivitas",
+      second: "Kawan!",
+    };
   } else if (now.getHours() < 15) {
-    greet += "Siang";
+    greet = {
+      time: "Selamat Siang",
+      first: "Waktunya Mendata",
+      second: "Satwa!",
+    };
   } else if (now.getHours() < 18) {
-    greet += "Sore";
+    greet = {
+      time: "Selamat Sore",
+      first: "Semoga Harimu",
+      second: "Menyenangkan!",
+    };
   } else {
-    greet += "Malam";
+    greet = {
+      time: "Selamat Malam",
+      first: "Jangan Lupa",
+      second: "Istirahat!",
+    };
   }
   return (
     <SafeAreaView>
-      <ScrollView className="px-4 pt-8 gap-8 bg-neutral-50 min-h-screen">
+      <ScrollView className="px-4 pt-8 space-y-8 bg-neutral-50 min-h-screen">
         <View className="flex flex-row justify-between items-center">
           <View className="flex flex-col gap-2">
             <Text
               className="text-base text-neutral-600 font-semibold"
               style={Inter}
             >
-              {greet} 👋
+              {greet.time} 👋
             </Text>
             <Text
               className="text-2xl text-neutral-950 font-semibold"
@@ -57,10 +65,14 @@ export default function HomeScreen() {
             className="rounded-full h-full aspect-square object-cover"
           />
         </View>
-        <Text className="text-black text-4xl leading-[46px]" style={Inter}>
-          Waktunya <Text className="text-custom-1">Mendata Satwa</Text>{" "}
-          Sekarang!
-        </Text>
+        <View className="flex flex-col space-y-2">
+          <Text className="text-black text-4xl" style={Inter}>
+            {greet.first}
+          </Text>
+          <Text className="text-custom-1 text-4xl" style={Inter}>
+            {greet.second}
+          </Text>
+        </View>
         <View className="bg-white border border-neutral-200 rounded-xl p-4 flex flex-row justify-around">
           <View className="flex flex-col gap-2 justify-center items-center  w-[40%]">
             <Text className="text-neutral-600 font-medium" style={Inter}>
@@ -88,10 +100,13 @@ export default function HomeScreen() {
             <Text className="text-custom-1 text-base" style={Inter}>
               Lihat Semua
             </Text>
-          </View>          
-          <CardContainer>
+          </View>
+          <ScrollView horizontal>
             <Card />
-          </CardContainer>
+            <Card />
+            <Card />
+            <Card />
+          </ScrollView>
         </View>
       </ScrollView>
     </SafeAreaView>

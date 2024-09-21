@@ -10,6 +10,9 @@ module.exports = {
           "3": '#0C0A1C',
           "4": '#E8E4FF',
           "5": '#B0A4FD',
+          success: "#42b968",
+          info: "#8cc5ff",
+          error: "#fcaea4"
         }
       }
     },

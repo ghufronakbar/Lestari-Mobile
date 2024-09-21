@@ -36,6 +36,7 @@ export default function HistoryScreen() {
         <TextInput
           className="w-[80%] bg-white border border-neutral-200 rounded-l-lg px-4 py-2 h-12"
           placeholder="Cari..."
+          style={Inter}
         />
         <View className="w-[20%] flex flex-row items-center justify-center bg-custom-1 rounded-r-lg">
           <Ionicons name="search" size={24} color="white" />

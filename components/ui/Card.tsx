@@ -10,7 +10,7 @@ export const CardContainer = ({ children }: { children?: React.ReactNode }) => {
 
 export const Card = () => {
   return (
-    <View className="w-[49%] h-60 border border-neutral-200 rounded-xl bg-white shadow-sm mb-2 overflow-hidden">
+    <View className="w-[45vw] h-60 border border-neutral-200 rounded-xl bg-white shadow-sm mb-2 overflow-hidden">
       <Image
         source={{ uri: "https://picsum.photos/200/300" }}
         className="w-full h-[60%] object-cover"
