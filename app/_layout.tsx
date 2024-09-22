@@ -12,7 +12,7 @@ export default function Layout() {
   const [fontsLoaded] = useFonts({
     Inter: require("../assets/fonts/Inter.ttf"),
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-  });  
+  });
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -20,10 +20,6 @@ export default function Layout() {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
-
-  if (!fontsLoaded) {
-    return <SpinnerLoading />;
-  }
 
   useEffect(() => {
     const handleAuthCheck = async () => {
@@ -42,7 +38,7 @@ export default function Layout() {
       }
     };
 
-    if (loading) {
+    if (loading || !fontsLoaded) {
       handleAuthCheck();
     }
   }, [loading]);

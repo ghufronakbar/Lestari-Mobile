@@ -37,6 +37,14 @@ export default function AddAnimalScreen() {
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isMapOpen, setIsMapOpen] = useState<boolean>(false);
 
+  const toastPending = () => {
+    Toast.show({
+      type: "info",
+      text1: "Loading...",
+      text2: "Harap Tunggu Sebentar...",
+    });
+  };
+
   const handlePickGallery = async () => {
     if (Platform.OS !== "web") {
       const { status } =
@@ -174,14 +182,6 @@ export default function AddAnimalScreen() {
     } finally {
       setIsPending(false);
     }
-  };
-
-  const toastPending = () => {
-    Toast.show({
-      type: "info",
-      text1: "Loading...",
-      text2: "Harap Tunggu Sebentar...",
-    });
   };
 
   if (loading) {

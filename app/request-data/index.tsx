@@ -74,7 +74,7 @@ export default function RequestDataScreen() {
         </View>
         <Pressable
           className="absolute bg-custom-1 w-fit h-fit p-4 rounded-full bottom-24 right-6 z-50 flex items-center justify-center"
-          onPress={() => router.push("/request-data/add")}
+          onPress={() => router.push({ pathname: "/request-data/add" })}
         >
           <Ionicons name="add" color={"white"} size={24} />
         </Pressable>

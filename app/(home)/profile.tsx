@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ScrollView,
   Pressable,
+  Platform,
 } from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -12,8 +13,17 @@ import { router, useNavigation } from "expo-router";
 import { logout } from "@/services/auth";
 import { useEffect, useState } from "react";
 import { initSavedProfile, SavedProfile } from "@/models/SavedProfile";
-import { getSavedProfile } from "@/services/account";
+import {
+  changePicture,
+  deletePicture,
+  getSavedProfile,
+} from "@/services/account";
 import ModalActionImage from "@/components/ui/ModalActionImage";
+import Overview from "@/components/ui/Overview";
+import compressImage from "@/utils/compressImage";
+import { ImageResult } from "expo-image-manipulator";
+import * as ImagePicker from "expo-image-picker";
+import Toast from "react-native-toast-message";
 
 export default function ProfileScreen() {
   useNavigation().setOptions({
@@ -21,6 +31,8 @@ export default function ProfileScreen() {
   });
 
   const [prof, setProf] = useState<SavedProfile>(initSavedProfile);
+  const [selectedImage, setSelectedImage] = useState<ImageResult | null>(null);
+  const [isPickImage, setIsPickImage] = useState<boolean>(false);
 
   const fetchResult = async () => {
     const result = await getSavedProfile();
@@ -39,11 +51,122 @@ export default function ProfileScreen() {
     fetchResult();
   }, []);
 
+  const handlePickGallery = async () => {
+    if (Platform.OS !== "web") {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+        return;
+      }
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setIsPickImage(false);
+      try {
+        const compressedImage = await compressImage(result.assets[0].uri);
+        await changePicture(compressedImage);
+        Toast.show({
+          type: "success",
+          text1: "Berhasil",
+          text2: "Berhasil mengganti foto profile",
+        });
+      } catch (error) {
+        Toast.show({
+          type: "error",
+          text1: "Gagal",
+          text2: "Gagal mengganti foto profile",
+        });
+      } finally {
+        await fetchResult();
+      }
+    }
+  };
+
+  const handlePickCamera = async () => {
+    if (Platform.OS !== "web") {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+        return;
+      }
+    }
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setIsPickImage(false);
+      try {
+        const compressedImage = await compressImage(result.assets[0].uri);
+        await changePicture(compressedImage);
+        Toast.show({
+          type: "success",
+          text1: "Berhasil",
+          text2: "Berhasil mengganti foto profile",
+        });
+      } catch (error) {
+        Toast.show({
+          type: "error",
+          text1: "Gagal",
+          text2: "Gagal mengganti foto profile",
+        });
+      } finally {
+        await fetchResult();
+      }
+    }
+  };
+
+  const handleDeleteImage = async () => {
+    setIsPickImage(false);
+    Toast.show({
+      type: "info",
+      text1: "Loading...",
+      text2: "Menghapus Foto Profile",
+    });
+    try {
+      await deletePicture();
+      Toast.show({
+        type: "success",
+        text1: "Berhasil",
+        text2: "Berhasil menghapus foto profile",
+      });
+      fetchResult();
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Gagal menghapus foto profile",
+      });
+    }
+  };
+
   return (
     <SafeAreaView>
-      
+      <ModalActionImage
+        isVisible={isPickImage}
+        onCamera={handlePickCamera}
+        onGallery={handlePickGallery}
+        onClose={() => setIsPickImage(false)}
+        message="Pilih Aksi untuk Melanjutkan"
+        title="Edit Foto Profile"
+        onDelete={prof.phone !== "" ? handleDeleteImage : undefined}
+      />
+
       <ScrollView className="px-4 pt-8 flex flex-col h-screen space-y-8">
-        <View className="relative w-32 h-32 self-center">
+        <Pressable
+          className="relative w-32 h-32 self-center"
+          onPress={() => {
+            setIsPickImage(true);
+          }}
+        >
           <Image
             source={
               prof.picture === ""
@@ -57,7 +180,7 @@ export default function ProfileScreen() {
           <View className="w-fit h-fit rounded-full bottom-1 right-1 absolute bg-custom-1 z-10 flex items-center justify-center">
             <Ionicons name="add" color="white" size={24} />
           </View>
-        </View>
+        </Pressable>
         <View>
           <Text
             className="text-black text-2xl self-center font-semibold text-center"
@@ -79,24 +202,8 @@ export default function ProfileScreen() {
             {prof.phone.slice(5, 9)}-{prof.phone.slice(9)}
           </Text>
         </View>
-        <View className="bg-custom-1 border border-neutral-200 rounded-xl p-4 flex flex-row justify-around">
-          <View className="flex flex-col gap-2 justify-center items-center  w-[40%]">
-            <Text className="text-white font-medium" style={Inter}>
-              Total Kontribusi
-            </Text>
-            <Text className="text-white text-4xl font-semibold" style={Inter}>
-              20
-            </Text>
-          </View>
-          <View className="w-px h-16 bg-neutral-200" />
-          <View className="flex flex-col gap-2 justify-center items-center w-[40%] ">
-            <Text className="text-white font-medium" style={Inter}>
-              Minggu Ini
-            </Text>
-            <Text className="text-white text-4xl font-semibold" style={Inter}>
-              20
-            </Text>
-          </View>
+        <View>
+          <Overview />
         </View>
         <View className="flex flex-col space-y-4 px-4">
           {MENUS.map((item, index) => (

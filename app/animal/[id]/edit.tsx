@@ -16,6 +16,7 @@ import { CustomInputText } from "@/components/ui/CustomInputText";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import {
+  deleteAnimal,
   editAnimal,
   editAnimalImage,
   FormAnimal,
@@ -31,6 +32,7 @@ import compressImage from "@/utils/compressImage";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import MapModal from "@/components/ui/MapModal";
+import ModalConfirmation from "@/components/ui/ModalConfirmation";
 
 export default function EditAnimalScreen() {
   const [form, setForm] = useState<FormAnimal>(initFormAnimal);
@@ -41,6 +43,7 @@ export default function EditAnimalScreen() {
   const [isPickImage, setIsPickImage] = useState<boolean>(false);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isMapOpen, setIsMapOpen] = useState<boolean>(false);
+  const [isConfirmDelete, setIsConfirmDelete] = useState<boolean>(false);
 
   const handlePickGallery = async () => {
     if (Platform.OS !== "web") {
@@ -205,6 +208,27 @@ export default function EditAnimalScreen() {
     });
   };
 
+  const handleDelete = async () => {
+    toastPending();
+    setLoading(true);
+    try {
+      await deleteAnimal(Number(id));
+      Toast.show({
+        type: "success",
+        text1: "Sukses",
+        text2: "Berhasil Menghapus Satwa",
+      });
+      router.push({ pathname: "/(home)/history" });
+    } catch (error) {
+      const err = error as ResponseFail;
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: err?.response?.data?.message || "Terjadi kesalahan",
+      });
+    }
+  };
+
   return (
     <SafeAreaView>
       <ModalActionImage
@@ -364,6 +388,14 @@ export default function EditAnimalScreen() {
                   Simpan
                 </Text>
               </Pressable>
+              <Pressable
+                className="bg-red-500 px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2"
+                onPress={() => setIsConfirmDelete(true)}
+              >
+                <Text className="text-sm text-white text-center" style={Inter}>
+                  Hapus
+                </Text>
+              </Pressable>
             </View>
           </View>
           <View className="h-96" />
@@ -373,6 +405,13 @@ export default function EditAnimalScreen() {
           setIsMapOpen={setIsMapOpen}
           form={form}
           setForm={setForm}
+        />
+        <ModalConfirmation
+          title="Hapus Satwa"
+          message="Apakah anda yakin ingin menghapus satwa ini?"
+          isVisible={isConfirmDelete}
+          onClose={() => setIsConfirmDelete(false)}
+          onConfirm={handleDelete}
         />
       </KeyboardAvoidingView>
     </SafeAreaView>

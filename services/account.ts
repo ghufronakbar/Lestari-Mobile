@@ -105,7 +105,7 @@ export const changePicture = async (
     formData.append("image", {
       uri: image.uri,
       type: "image/jpeg",
-      name: "animal.jpg",
+      name: "profile.jpg",
     } as any);
     const { data } = await axiosInstance.put<ProfileResponse>(
       "/account/picture",
@@ -122,6 +122,17 @@ export const deletePicture = async (): Promise<Response> => {
   try {
     const { data } = await axiosInstance.delete<Response>("/account/picture");
     await AsyncStorage.setItem(PICTURE, "");
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getLinkForgotPass = async (email: string): Promise<Response> => {
+  try {
+    const { data } = await axiosInstance.post(`/account/reset-password`, {
+      email,
+    });
     return data;
   } catch (error) {
     throw error;

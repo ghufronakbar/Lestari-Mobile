@@ -5,17 +5,18 @@ import {
   View,
   ScrollView,
   Platform,
+  Pressable,
 } from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { Card } from "@/components/ui/Card";
-import { Link, useNavigation } from "expo-router";
+import { Link, router, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import { initSavedProfile, SavedProfile } from "@/models/SavedProfile";
 import { getSavedProfile } from "@/services/account";
 import greet from "@/helpers/greet";
 import { Animal } from "@/models/Animal";
 import { getAllAnimals } from "@/services/animal";
-import ImagePicker from "expo-image-picker";
+import Overview from "@/components/ui/Overview";
 
 export default function HomeScreen() {
   useNavigation().setOptions({
@@ -66,7 +67,12 @@ export default function HomeScreen() {
               {prof.name}
             </Text>
           </View>
-          <Link href="/profile">
+          <Pressable
+            onPress={() => {
+              fetchProfile();
+              router.push({ pathname: "/(home)/profile" });
+            }}
+          >
             <Image
               source={
                 prof.picture === ""
@@ -75,9 +81,9 @@ export default function HomeScreen() {
               }
               width={49}
               height={49}
-              className="rounded-full h-full aspect-square object-cover"
+              className="rounded-full w-12 h-12 aspect-square object-cover"
             />
-          </Link>
+          </Pressable>
         </View>
         <View className="flex flex-col space-y-2">
           <Text className="text-black text-4xl" style={Inter}>
@@ -87,24 +93,8 @@ export default function HomeScreen() {
             {greet.second}
           </Text>
         </View>
-        <View className="bg-custom-1 border border-neutral-200 rounded-xl p-4 flex flex-row justify-around">
-          <View className="flex flex-col gap-2 justify-center items-center  w-[40%]">
-            <Text className="text-white font-medium" style={Inter}>
-              Total Kontribusi
-            </Text>
-            <Text className="text-white text-4xl font-semibold" style={Inter}>
-              20
-            </Text>
-          </View>
-          <View className="w-px h-16 bg-neutral-200" />
-          <View className="flex flex-col gap-2 justify-center items-center w-[40%] ">
-            <Text className="text-white font-medium" style={Inter}>
-              Minggu Ini
-            </Text>
-            <Text className="text-white text-4xl font-semibold" style={Inter}>
-              20
-            </Text>
-          </View>
+        <View>
+          <Overview />
         </View>
         <View className="flex flex-col">
           <View className="flex flex-row items-center justify-between mb-6">

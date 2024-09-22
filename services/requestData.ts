@@ -52,7 +52,7 @@ export const createReqDataUser = async (
     formData.append("image", {
       uri: image.uri,
       type: "image/jpeg",
-      name: "animal.jpg",
+      name: "requestDataAttachment.jpg",
     } as any);
     const { data } = await axiosInstance.post("/request-data", formData);
     return data;

@@ -5,6 +5,7 @@ import {
   ScrollView,
   Pressable,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { CustomInputText } from "@/components/ui/CustomInputText";
@@ -14,6 +15,7 @@ import { FormLogin, initFormLogin, login } from "@/services/auth";
 import Toast from "react-native-toast-message";
 import SpinnerLoading from "@/components/ui/SpinnerLoading";
 import { getProfile } from "@/services/account";
+import { isLoading } from "expo-font";
 
 export default function LoginScreen() {
   useNavigation().setOptions({
@@ -36,7 +38,7 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       await login(form);
-      await getProfile()
+      await getProfile();
       router.push("/(home)");
       Toast.show({
         type: "success",
@@ -55,10 +57,6 @@ export default function LoginScreen() {
       setForm(initFormLogin);
     }
   };
-
-  if (loading) {
-    return <SpinnerLoading />;
-  }
 
   return (
     <SafeAreaView className="flex-1 ">
@@ -89,15 +87,19 @@ export default function LoginScreen() {
               <View className="mt-4">
                 <Pressable
                   className="bg-custom-1 px-2 py-2 rounded-lg flex items-center justify-center h-10 space-x-2"
-                  onPress={handleLogin}
+                  onPress={loading ? () => {} : handleLogin}
                 >
-                  <Text
-                    className="text-sm text-white text-center"
-                    style={Inter}
-                    onPress={handleLogin}
-                  >
-                    Login
-                  </Text>
+                  {loading ? (
+                    <ActivityIndicator size="small" color="white" />
+                  ) : (
+                    <Text
+                      className="text-sm text-white text-center"
+                      style={Inter}
+                      onPress={handleLogin}
+                    >
+                      Login
+                    </Text>
+                  )}
                 </Pressable>
                 <View className="flex flex-row justify-between items-center my-6">
                   <View className="h-px w-[30%] bg-neutral-200" />
@@ -107,7 +109,7 @@ export default function LoginScreen() {
               </View>
               <Pressable
                 className="bg-white border-custom-1 border px-2 py-2 rounded-lg flex items-center justify-center h-10 space-x-2"
-                onPress={() => router.push("/register")}
+                onPress={loading ? () => {} : () => router.push("/register")}
               >
                 <Text
                   className="text-sm text-custom-1 text-center"
@@ -120,6 +122,7 @@ export default function LoginScreen() {
                 <Text
                   className="text-black self-center flex flex-row items-center"
                   style={Inter}
+                  onPress={() => router.push({ pathname: "/forgot-password" })}
                 >
                   Lupa Kata Sandi?
                   <Text className="text-custom-1"> Reset Password</Text>
