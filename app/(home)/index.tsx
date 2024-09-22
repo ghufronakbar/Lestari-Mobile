@@ -6,6 +6,7 @@ import {
   ScrollView,
   Platform,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { Card } from "@/components/ui/Card";
@@ -17,6 +18,7 @@ import greet from "@/helpers/greet";
 import { Animal } from "@/models/Animal";
 import { getAllAnimals } from "@/services/animal";
 import Overview from "@/components/ui/Overview";
+import { C } from "@/constants/Colors";
 
 export default function HomeScreen() {
   useNavigation().setOptions({
@@ -25,10 +27,13 @@ export default function HomeScreen() {
 
   const [prof, setProf] = useState<SavedProfile>(initSavedProfile);
   const [data, setData] = useState<Animal[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const fetchData = async () => {
+    setLoading(true);
     const response = await getAllAnimals("", 5);
     setData(response.data);
+    setLoading(false);
   };
   useEffect(() => {
     fetchData();
@@ -112,6 +117,11 @@ export default function HomeScreen() {
               <Card key={item.animalId} item={item} />
             ))}
           </ScrollView>
+          {loading && (
+            <View className="flex-1 items-center justify-center mt-16">
+              <ActivityIndicator size="large" color={C[1]} />
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

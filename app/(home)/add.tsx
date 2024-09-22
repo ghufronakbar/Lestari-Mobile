@@ -9,12 +9,14 @@ import {
   Platform,
   Pressable,
   ActivityIndicator,
+  FlatList,
+  TouchableOpacity,
 } from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { Feather } from "@expo/vector-icons";
 import { CustomInputText } from "@/components/ui/CustomInputText";
 import { useNavigation } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createAnimal, FormAnimal, initFormAnimal } from "@/services/animal";
 import { ImageResult } from "expo-image-manipulator";
 import compressImage from "@/utils/compressImage";
@@ -25,6 +27,9 @@ import Toast from "react-native-toast-message";
 import { ResponseFail } from "@/models/Response";
 import ModalActionImage from "@/components/ui/ModalActionImage";
 import SpinnerLoading from "@/components/ui/SpinnerLoading";
+import { Suggestion } from "@/models/Suggestion";
+import { getSuggestions } from "@/services/suggestion";
+import useDebounce from "@/utils/useDebounce";
 
 export default function AddAnimalScreen() {
   useNavigation().setOptions({
@@ -36,6 +41,34 @@ export default function AddAnimalScreen() {
   const [isPickImage, setIsPickImage] = useState<boolean>(false);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isMapOpen, setIsMapOpen] = useState<boolean>(false);
+  
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [isSuggestionOpen, setIsSuggestionOpen] = useState<boolean>(false);
+
+  const fetchSuggestions = async (text: string) => {
+    const response = await getSuggestions(text);
+    setSuggestions(response.data);
+  };
+
+  useDebounce(
+    () => {
+      if (form.localName.length <= 2 && form.latinName.length <= 2) {
+        setIsSuggestionOpen(false);
+        return;
+      }
+      if (form.localName.length >= 2) {
+        fetchSuggestions(form.localName);
+        setIsSuggestionOpen(true);
+      }
+      if (form.latinName.length >= 2) {
+        fetchSuggestions(form.latinName);
+        setIsSuggestionOpen(true);
+      }
+    },
+    500,
+    [form.localName, form.latinName]
+  );
+
 
   const toastPending = () => {
     Toast.show({
@@ -239,6 +272,40 @@ export default function AddAnimalScreen() {
               onChangeText={(value) => setForm({ ...form, latinName: value })}
               value={form.latinName}
             />
+            {isSuggestionOpen && suggestions.length > 0 && (
+              <View className="border border-neutral-300 rounded-lg bg-white">
+                {suggestions.map((item) => (
+                  <TouchableOpacity
+                    key={item.suggestionId}
+                    onPress={() => {
+                      setForm({
+                        ...form,
+                        latinName: item.latinName,
+                        localName: item.localName,
+                      });
+                      setIsSuggestionOpen(false);
+                    }}
+                    style={{
+                      padding: 10,
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#ddd",
+                    }}
+                  >
+                    <View className="flex flex-col space-y-1">
+                      <Text
+                        className="text-black font-semibold text-base"
+                        style={Inter}
+                      >
+                        {item.localName}
+                      </Text>
+                      <Text className="text-neutral-600 text-sm" style={Inter}>
+                        {item.latinName}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
             <CustomInputText
               label="Jumlah Ditemukan"
               placeholder="Masukkan Jumlah Ditemukan"

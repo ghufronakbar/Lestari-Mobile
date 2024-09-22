@@ -9,6 +9,7 @@ import {
   Pressable,
   Platform,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { Feather, Ionicons } from "@expo/vector-icons";
@@ -33,6 +34,9 @@ import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import MapModal from "@/components/ui/MapModal";
 import ModalConfirmation from "@/components/ui/ModalConfirmation";
+import { getSuggestions } from "@/services/suggestion";
+import useDebounce from "@/utils/useDebounce";
+import { Suggestion } from "@/models/Suggestion";
 
 export default function EditAnimalScreen() {
   const [form, setForm] = useState<FormAnimal>(initFormAnimal);
@@ -44,6 +48,33 @@ export default function EditAnimalScreen() {
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isMapOpen, setIsMapOpen] = useState<boolean>(false);
   const [isConfirmDelete, setIsConfirmDelete] = useState<boolean>(false);
+
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [isSuggestionOpen, setIsSuggestionOpen] = useState<boolean>(false);
+
+  const fetchSuggestions = async (text: string) => {
+    const response = await getSuggestions(text);
+    setSuggestions(response.data);
+  };
+
+  useDebounce(
+    () => {
+      if (form.localName.length <= 2 && form.latinName.length <= 2) {
+        setIsSuggestionOpen(false);
+        return;
+      }
+      if (form.localName.length >= 2) {
+        fetchSuggestions(form.localName);
+        setIsSuggestionOpen(true);
+      }
+      if (form.latinName.length >= 2) {
+        fetchSuggestions(form.latinName);
+        setIsSuggestionOpen(true);
+      }
+    },
+    500,
+    [form.localName, form.latinName]
+  );
 
   const handlePickGallery = async () => {
     if (Platform.OS !== "web") {
@@ -281,6 +312,40 @@ export default function EditAnimalScreen() {
               onChangeText={(value) => setForm({ ...form, latinName: value })}
               value={form.latinName}
             />
+            {isSuggestionOpen && suggestions.length > 0 && (
+              <View className="border border-neutral-300 rounded-lg bg-white">
+                {suggestions.map((item) => (
+                  <TouchableOpacity
+                    key={item.suggestionId}
+                    onPress={() => {
+                      setForm({
+                        ...form,
+                        latinName: item.latinName,
+                        localName: item.localName,
+                      });
+                      setIsSuggestionOpen(false);
+                    }}
+                    style={{
+                      padding: 10,
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#ddd",
+                    }}
+                  >
+                    <View className="flex flex-col space-y-1">
+                      <Text
+                        className="text-black font-semibold text-base"
+                        style={Inter}
+                      >
+                        {item.localName}
+                      </Text>
+                      <Text className="text-neutral-600 text-sm" style={Inter}>
+                        {item.latinName}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
             <CustomInputText
               label="Jumlah Ditemukan"
               placeholder="Masukkan Jumlah Ditemukan"
