@@ -16,7 +16,7 @@ export default function IndexScreen() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
-
+  
   if (!loaded) {
     return <SpinnerLoading />;
   }
