@@ -1,7 +1,15 @@
 import axiosInstance from "@/config/axiosInstance";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/constants/asyncStorage";
+import {
+  ACCESS_TOKEN,
+  EMAIL,
+  NAME,
+  PHONE,
+  PICTURE,
+  REFRESH_TOKEN,
+} from "@/constants/asyncStorage";
 import { Response } from "@/models/Response";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 
 interface LoginResponse extends Response {
   data: {
@@ -10,10 +18,20 @@ interface LoginResponse extends Response {
   };
 }
 
-export const login = async (
-  email: string,
-  password: string
-): Promise<LoginResponse | null> => {
+export interface FormLogin {
+  email: string;
+  password: string;
+}
+
+export const initFormLogin: FormLogin = {
+  email: "",
+  password: "",
+};
+
+export const login = async ({
+  email,
+  password,
+}: FormLogin): Promise<LoginResponse | null> => {
   try {
     const { data } = await axiosInstance.post<LoginResponse>("/account/login", {
       email,
@@ -75,4 +93,17 @@ export const refresh = async (): Promise<LoginResponse | null> => {
       throw new Error("An unexpected error occurred");
     }
   }
+};
+
+export const logout = async () => {
+  await Promise.all([
+    AsyncStorage.removeItem(EMAIL),
+    AsyncStorage.removeItem(ACCESS_TOKEN),
+    AsyncStorage.removeItem(REFRESH_TOKEN),
+    AsyncStorage.removeItem(ACCESS_TOKEN),
+    AsyncStorage.removeItem(NAME),
+    AsyncStorage.removeItem(PHONE),
+    AsyncStorage.removeItem(PICTURE),
+  ]);
+  router.replace("/login");
 };

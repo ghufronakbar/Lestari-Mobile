@@ -5,74 +5,161 @@ import {
   ScrollView,
   TextInput,
   Pressable,
+  Linking,
+  Image,
+  Modal,
+  StyleSheet,
+  Dimensions,
+  ImageSourcePropType,
 } from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { ListContainer, ListItem } from "@/components/ui/ListItem";
-import { router, useNavigation } from "expo-router";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { C } from "@/constants/Colors";
+import { useEffect, useState } from "react";
+import { initRequestData, RequestData } from "@/models/RequestData";
+import formatDate from "@/utils/formatDate";
+import { getReqDataById } from "@/services/requestData";
+import Toast from "react-native-toast-message";
+import ModalShowImage from "@/components/ui/ModalShowImage";
 
 export default function DetailRequestDataScreen() {
   useNavigation().setOptions({
     headerShown: false,
   });
+
+  const [isShowImage, setIsShowImage] = useState<boolean>(false);
+  const [data, setData] = useState<RequestData>(initRequestData);
+  const { id } = useLocalSearchParams() as { id: string };
+  const fetchData = async () => {
+    try {
+      const response = await getReqDataById(Number(id));
+      setData(response);
+    } catch (error) {
+      router.push({ pathname: "/request-data" });
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleDownload = async () => {
+    const supported = await Linking.canOpenURL(data.sendDatas[0].url);
+    if (supported) {
+      await Linking.openURL(data.sendDatas[0].url);
+    } else {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Terjadi Kesalahan Saat Mengunduh File",
+      });
+    }
+  };
+
   return (
     <SafeAreaView>
-      <ScrollView className="px-4 pt-8 flex flex-col h-screen space-y-4">
-        <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
-          Lorem ipsum, dolor sit amet consectetur adipisicing
-        </Text>
-        <View>
-          <View className="flex flex-row items-center justify-center w-[26%] py-1 px-2 space-x-1 bg-custom-success rounded-xl">
-            <AntDesign name="check" size={16} color="white" />
-            <Text className="text-xs text-white font-medium" style={Inter}>
-              Disetujui
+      <View className="px-4 pt-8 flex flex-col h-screen space-y-4">
+        <View className="flex flex-row items-center space-x-2">
+          <Pressable onPress={() => router.back()}>
+            <Ionicons name="chevron-back" size={24} color="black" />
+          </Pressable>
+          <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
+            Detail Permintaan
+          </Text>
+        </View>
+        <ScrollView className="space-y-4">
+          <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
+            {data.subject}
+          </Text>
+          <View>
+            <View
+              className={`flex flex-row items-center justify-center w-[26%] py-1 px-2 space-x-1 rounded-xl ${
+                data.isPending
+                  ? "bg-custom-info"
+                  : data.isApproved
+                  ? "bg-custom-success"
+                  : "bg-custom-error"
+              }`}
+            >
+              <AntDesign
+                name={
+                  data?.isPending
+                    ? "clockcircle"
+                    : data.isApproved
+                    ? "check"
+                    : "close"
+                }
+                size={16}
+                color="white"
+              />
+              <Text className="text-xs text-white font-medium" style={Inter}>
+                {data.isPending
+                  ? "Tertunda"
+                  : data.isApproved
+                  ? "Disetujui"
+                  : "Ditolak"}
+              </Text>
+            </View>
+          </View>
+          <View>
+            <Text className="font-medium" style={Inter}>
+              Diajukan Pada:{" "}
+              {data.requestDataId === 0 ? "-" : `${formatDate(data.createdAt)}`}
+            </Text>
+            <Text className="font-medium" style={Inter}>
+              Dijawab Pada:{" "}
+              {data.requestDataId === 0 ? "-" : `${formatDate(data.createdAt)}`}
             </Text>
           </View>
-        </View>
-        <View>
-          <Text className="font-medium" style={Inter}>
-            Diajukan Pada: Selasa, 12 Desember 2024
+          <Text className="text-neutral-600 text-base" style={Inter}>
+            {data.body}
           </Text>
           <Text className="font-medium" style={Inter}>
-            Dijawab Pada: -
+            Lampiran:
           </Text>
-        </View>
-        <Text className="text-neutral-600 text-base" style={Inter}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid enim
-          impedit minus nam soluta voluptatum reiciendis accusantium placeat
-          cumque quibusdam doloremque voluptates dolorem nihil atque odit odio
-          delectus voluptas, qui vel ipsa. Nisi quam illum, modi a saepe
-          temporibus quibusdam eum ex soluta aspernatur maiores commodi
-          doloremque hic consectetur distinctio quos voluptatem illo dicta
-          impedit, quia iusto voluptates necessitatibus odio eius. Harum,
-          delectus necessitatibus! Ipsa iure sequi, iste qui deserunt explicabo
-          sint, ipsum debitis aperiam vero optio id eaque dolores ut recusandae,
-          vitae quia! Corrupti doloribus neque similique, ea dolor quaerat,
-          saepe quia quam voluptatibus suscipit quos sit temporibus voluptate
-          ullam rerum a sequi enim delectus, doloremque praesentium vero?
-          Distinctio quos autem doloremque sed ut nam perferendis reiciendis
-          nulla! Architecto id dolore expedita, fuga quo adipisci. Modi at
-          pariatur molestias iste commodi ipsam autem iure doloremque saepe
-          dolor quo quibusdam vel harum vitae, consectetur quos fugiat atque
-          doloribus. Eius maiores illum recusandae. Consectetur explicabo facere
-          non eius inventore in temporibus fugiat? In repellendus enim, esse
-          magnam veniam, earum modi dolorem, architecto ipsum dolorum voluptatem
-          hic praesentium officia aliquid ducimus! Labore, doloribus distinctio.
-          Tempora laborum excepturi soluta voluptate ipsa. Rem rerum sunt, unde
-          at exercitationem quaerat magni. Deserunt laborum quisquam
-          dignissimos.
-        </Text>
-        <Pressable
-          className="bg-custom-1 px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2"
-          onPress={() => router.push("https://google.com")}
-        >
-          <Text className="text-sm text-white text-center" style={Inter}>
-            Unduh
+          <Pressable onPress={() => setIsShowImage(true)}>
+            <Image
+              source={
+                data.requestDataId === 0
+                  ? require("@/assets/placeholder.jpg")
+                  : { uri: data.attachment }
+              }
+              className="w-full h-40 object-cover rounded-lg border border-neutral-300 overflow-hidden shadow-sm"
+            />
+          </Pressable>
+          <Text
+            className="font-medium text-neutral-600 text-xs -mt-4"
+            style={Inter}
+          >
+            *Klik untuk melihat
           </Text>
-        </Pressable>
-        <View className="h-96" />
-      </ScrollView>
+          {!data.isPending && data.isApproved && data.sendDatas.length > 0 && (
+            <Pressable
+              className="bg-custom-1 px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2"
+              onPress={handleDownload}
+            >
+              <Text className="text-sm text-white text-center" style={Inter}>
+                Unduh
+              </Text>
+            </Pressable>
+          )}
+          <ModalShowImage
+            visible={isShowImage}
+            onClose={() => {
+              setIsShowImage(false);
+            }}
+            url={
+              data.requestDataId === 0
+                ? require("@/assets/placeholder.jpg")
+                : { uri: data.attachment }
+            }
+            title="Lampiran"
+          />
+          <View className="h-96" />
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }

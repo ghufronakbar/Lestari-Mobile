@@ -1,12 +1,64 @@
-import { View, Text, SafeAreaView, ScrollView, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  Pressable,
+  Alert,
+} from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { CustomInputText } from "@/components/ui/CustomInputText";
 import { router, useNavigation } from "expo-router";
+import { useState } from "react";
+import { FormLogin, initFormLogin, login } from "@/services/auth";
+import Toast from "react-native-toast-message";
+import SpinnerLoading from "@/components/ui/SpinnerLoading";
+import { getProfile } from "@/services/account";
 
 export default function LoginScreen() {
   useNavigation().setOptions({
     headerShown: false,
   });
+
+  const [form, setForm] = useState<FormLogin>(initFormLogin);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleLogin = async () => {
+    console.log("press", form);
+    if (form.email == "" || form.password == "") {
+      Toast.show({
+        type: "error",
+        text1: "Login Gagal",
+        text2: "Email dan Password wajib diisi",
+      });
+      return;
+    }
+    setLoading(true);
+    try {
+      await login(form);
+      await getProfile()
+      router.push("/(home)");
+      Toast.show({
+        type: "success",
+        text1: "Login Berhasil",
+        text2: "Selamat Datang di Lestari",
+      });
+    } catch (error: any) {
+      console.log(error);
+      Toast.show({
+        type: "error",
+        text1: "Login Gagal",
+        text2: error?.message || "Terjadi kesalahan saat login",
+      });
+    } finally {
+      setLoading(false);
+      setForm(initFormLogin);
+    }
+  };
+
+  if (loading) {
+    return <SpinnerLoading />;
+  }
 
   return (
     <SafeAreaView className="flex-1 ">
@@ -23,26 +75,30 @@ export default function LoginScreen() {
               <CustomInputText
                 label="Email"
                 placeholder="Masukkan Alamat Email"
-                onChangeText={() => {}}
-                value=""
+                onChangeText={(value) => setForm({ ...form, email: value })}
+                value={form.email}
                 keyboardType="email-address"
               />
               <CustomInputText
                 label="Password"
                 placeholder="Masukkan Password"
-                onChangeText={() => {}}
-                value=""
+                onChangeText={(value) => setForm({ ...form, password: value })}
+                value={form.password}
                 secureTextEntry
               />
               <View className="mt-4">
-                <View className="bg-custom-1 px-2 py-2 rounded-lg flex items-center justify-center h-10 space-x-2">
+                <Pressable
+                  className="bg-custom-1 px-2 py-2 rounded-lg flex items-center justify-center h-10 space-x-2"
+                  onPress={handleLogin}
+                >
                   <Text
                     className="text-sm text-white text-center"
                     style={Inter}
+                    onPress={handleLogin}
                   >
                     Login
                   </Text>
-                </View>
+                </Pressable>
                 <View className="flex flex-row justify-between items-center my-6">
                   <View className="h-px w-[30%] bg-neutral-200" />
                   <Text style={Inter}>Belum Memiliki Akun</Text>
@@ -58,6 +114,15 @@ export default function LoginScreen() {
                   style={Inter}
                 >
                   Buat Akun
+                </Text>
+              </Pressable>
+              <Pressable>
+                <Text
+                  className="text-black self-center flex flex-row items-center"
+                  style={Inter}
+                >
+                  Lupa Kata Sandi?
+                  <Text className="text-custom-1"> Reset Password</Text>
                 </Text>
               </Pressable>
             </View>

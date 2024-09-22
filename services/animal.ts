@@ -2,18 +2,19 @@ import axiosInstance from "@/config/axiosInstance";
 import { Animal } from "@/models/Animal";
 import { Limitation } from "@/models/Limitation";
 import { Response } from "@/models/Response";
+import * as ImagePicker from "expo-image-picker";
 
 interface AnimalResponse extends Response {
   limitation: Limitation;
   data: Animal[];
 }
 
-type Query = "editable" | undefined;
+type Query = "editable";
 
 export const getAllAnimals = async (
   search: string,
   limit: number,
-  query: Query
+  query?: Query
 ): Promise<AnimalResponse> => {
   try {
     const { data } = await axiosInstance.get<AnimalResponse>(`/animal`, {
@@ -62,10 +63,14 @@ export const initFormAnimal: FormAnimal = {
 
 export const createAnimal = async (
   form: FormAnimal,
-  image: File
+  image: ImagePicker.ImagePickerAsset
 ): Promise<Response> => {
   const formData = new FormData();
-  formData.append("image", image);
+  formData.append("image", {
+    uri: image.uri,
+    type: "image/jpeg",
+    name: "animal.jpg",
+  } as any);
   formData.append("localName", form.localName);
   formData.append("latinName", form.latinName);
   formData.append("habitat", form.habitat);
@@ -87,21 +92,24 @@ export const editAnimal = async (
   form: FormAnimal
 ): Promise<Response> => {
   try {
-    const { data } = await axiosInstance.put<Response>(`/animal/${id}`, {
-      data: form,
-    });
+    const { data } = await axiosInstance.put<Response>(`/animal/${id}`, form);
     return data;
   } catch (error) {
+    console.log(error);
     throw error;
   }
 };
 
 export const editAnimalImage = async (
   id: number,
-  image: File
+  image: ImagePicker.ImagePickerAsset
 ): Promise<Response> => {
   const formData = new FormData();
-  formData.append("image", image);
+  formData.append("image", {
+    uri: image.uri,
+    type: "image/jpeg",
+    name: "animal.jpg",
+  } as any);
   try {
     const { data } = await axiosInstance.patch<Response>(
       `/animal/${id}`,

@@ -14,6 +14,7 @@ export interface Animal {
   createdAt: string;
   updatedAt: string;
   image: string;
+  isEditable: boolean;
   urlGoogleMap: string;
   user: User;
 }
@@ -32,6 +33,7 @@ export const initAnimal: Animal = {
   createdAt: "2022-04-01T00:00:00.000Z",
   updatedAt: "2022-04-01T00:00:00.000Z",
   image: "/",
+  isEditable: false,
   urlGoogleMap: "https://www.google.com/maps",
   user: initUser,
 };

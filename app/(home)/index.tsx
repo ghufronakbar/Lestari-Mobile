@@ -1,45 +1,53 @@
-import { Image, Text, SafeAreaView, View, ScrollView } from "react-native";
+import {
+  Image,
+  Text,
+  SafeAreaView,
+  View,
+  ScrollView,
+  Platform,
+} from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { Card } from "@/components/ui/Card";
 import { Link, useNavigation } from "expo-router";
-
-interface Greet {
-  time: string;
-  first: string;
-  second: string;
-}
+import { useEffect, useState } from "react";
+import { initSavedProfile, SavedProfile } from "@/models/SavedProfile";
+import { getSavedProfile } from "@/services/account";
+import greet from "@/helpers/greet";
+import { Animal } from "@/models/Animal";
+import { getAllAnimals } from "@/services/animal";
+import ImagePicker from "expo-image-picker";
 
 export default function HomeScreen() {
   useNavigation().setOptions({
     headerShown: false,
   });
-  const now = new Date();
-  let greet: Greet;
-  if (now.getHours() < 12) {
-    greet = {
-      time: "Selamat Pagi",
-      first: "Semangat Beraktivitas",
-      second: "Kawan!",
-    };
-  } else if (now.getHours() < 15) {
-    greet = {
-      time: "Selamat Siang",
-      first: "Waktunya Mendata",
-      second: "Satwa!",
-    };
-  } else if (now.getHours() < 18) {
-    greet = {
-      time: "Selamat Sore",
-      first: "Semoga Harimu",
-      second: "Menyenangkan!",
-    };
-  } else {
-    greet = {
-      time: "Selamat Malam",
-      first: "Jangan Lupa",
-      second: "Istirahat!",
-    };
-  }
+
+  const [prof, setProf] = useState<SavedProfile>(initSavedProfile);
+  const [data, setData] = useState<Animal[]>([]);
+
+  const fetchData = async () => {
+    const response = await getAllAnimals("", 5);
+    setData(response.data);
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchProfile = async () => {
+    const result = await getSavedProfile();
+    setProf({
+      accessToken: result.accessToken || "",
+      refreshToken: result.refreshToken || "",
+      name: result.name || "",
+      email: result.email || "",
+      phone: result.phone || "",
+      picture: result.picture || "",
+    });
+  };
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
   return (
     <SafeAreaView>
       <ScrollView className="px-4 pt-8 space-y-8 bg-neutral-50 min-h-screen">
@@ -55,14 +63,16 @@ export default function HomeScreen() {
               className="text-2xl text-neutral-950 font-semibold"
               style={Inter}
             >
-              Ghufron Akbar
+              {prof.name}
             </Text>
           </View>
           <Link href="/profile">
             <Image
-              source={{
-                uri: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541",
-              }}
+              source={
+                prof.picture === ""
+                  ? require("@/assets/profile.png")
+                  : { uri: prof.picture }
+              }
               width={49}
               height={49}
               className="rounded-full h-full aspect-square object-cover"
@@ -108,9 +118,9 @@ export default function HomeScreen() {
             </Link>
           </View>
           <ScrollView horizontal>
-            <Card />
-            <Card />
-            <Card />
+            {data.map((item) => (
+              <Card key={item.animalId} item={item} />
+            ))}
           </ScrollView>
         </View>
       </ScrollView>

@@ -1,16 +1,25 @@
 import { C } from "@/constants/Colors";
 import { Inter } from "@/constants/Fonts";
+import { RequestData } from "@/models/RequestData";
+import formatDate from "@/utils/formatDate";
 import { AntDesign } from "@expo/vector-icons";
-import { Link } from "expo-router";
-import { Text, View } from "react-native";
+import { Link, router } from "expo-router";
+import { Pressable, Text, View } from "react-native";
 
 export const ListContainer = ({ children }: { children?: React.ReactNode }) => {
   return <View className="flex flex-col justify-between">{children}</View>;
 };
 
-export const ListItem = () => {
+export const ListItem = ({ item }: { item: RequestData }) => {
   return (
-    <Link href={'/request-data/1'}>
+    <Pressable
+      onPress={() =>
+        router.push({
+          pathname: "/request-data/[id]",
+          params: { id: item.requestDataId },
+        })
+      }
+    >
       <View className="w-full border border-neutral-200 rounded-lg h-28 bg-white shadow-sm flex flex-row justify-between items-center px-4 mb-1">
         <View className="flex flex-col max-w-[80%]">
           <Text
@@ -18,107 +27,46 @@ export const ListItem = () => {
             numberOfLines={1}
             style={Inter}
           >
-            Subjek
+            {item.subject}
           </Text>
           <Text
             className="text-sm text-neutral-600 font-medium"
             numberOfLines={2}
             style={Inter}
           >
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius
-            perspiciatis
+            {item.body}
           </Text>
           <Text
             className="text-xs text-neutral-600 font-medium mt-2"
             numberOfLines={1}
             style={Inter}
           >
-            Selasa, 19 Agustus 2022
+            {formatDate(item.createdAt)}
           </Text>
         </View>
         <View className="flex flex-col items-center justify-center w-[20%] space-y-1">
-          <AntDesign name="checkcircle" size={24} color={C.success} />
+          <AntDesign
+            name={
+              item.isPending
+                ? "clockcircle"
+                : item.isApproved
+                ? "checkcircle"
+                : "closecircle"
+            }
+            size={24}
+            color={
+              item.isPending ? C.info : item.isApproved ? C.success : C.error
+            }
+          />
           <Text className="text-xs text-neutral-600 font-medium" style={Inter}>
-            Disetujui
+            {item.isPending
+              ? "Tertunda"
+              : item.isApproved
+              ? "Disetujui"
+              : "Ditolak"}
           </Text>
         </View>
       </View>
-    </Link>
+    </Pressable>
   );
 };
-
-// PENDING
-{
-  /* <View className="w-full border border-neutral-200 rounded-lg h-28 bg-white shadow-sm flex flex-row justify-between items-center px-4">
-<View className="flex flex-col max-w-[80%]">
-  <Text
-    className="text-lg text-neutral-950 font-bold"
-    numberOfLines={1}
-    style={Inter}
-  >
-    Subjek
-  </Text>
-  <Text
-    className="text-sm text-neutral-600 font-medium"
-    numberOfLines={2}
-    style={Inter}
-  >
-    Lorem ipsum dolor
-  </Text>
-  <Text
-    className="text-xs text-neutral-600 font-medium mt-2"
-    numberOfLines={1}
-    style={Inter}
-  >
-    Selasa, 19 Agustus 2022
-  </Text>
-</View>
-<View className="flex flex-col items-center justify-center w-[20%] space-y-1">
-  <AntDesign name="clockcircle" size={24} color={C.info} />
-  <Text
-    className="text-xs text-neutral-600 font-medium"
-    style={Inter}
-  >
-    Tertunda
-  </Text>
-</View>
-</View> */
-}
-
-// REJECTED
-{
-  /* <View className="w-full border border-neutral-200 rounded-lg h-28 bg-white shadow-sm flex flex-row justify-between items-center px-4">
-              <View className="flex flex-col max-w-[80%]">
-                <Text
-                  className="text-lg text-neutral-950 font-bold"
-                  numberOfLines={1}
-                  style={Inter}
-                >
-                  Subjek
-                </Text>
-                <Text
-                  className="text-sm text-neutral-600 font-medium"
-                  numberOfLines={2}
-                  style={Inter}
-                >
-                  Lorem ipsum dolor
-                </Text>
-                <Text
-                  className="text-xs text-neutral-600 font-medium mt-2"
-                  numberOfLines={1}
-                  style={Inter}
-                >
-                  Selasa, 19 Agustus 2022
-                </Text>
-              </View>
-              <View className="flex flex-col items-center justify-center w-[20%] space-y-1">
-                <AntDesign name="closecircle" size={24} color={C.error} />
-                <Text
-                  className="text-xs text-neutral-600 font-medium"
-                  style={Inter}
-                >
-                  Ditolak
-                </Text>
-              </View>
-            </View> */
-}

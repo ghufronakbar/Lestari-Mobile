@@ -4,7 +4,7 @@ export interface Response {
 }
 
 export interface ResponseFail {
-  response: {
-    data: Response;
+  response?: {
+    data?: Response;
   };
 }

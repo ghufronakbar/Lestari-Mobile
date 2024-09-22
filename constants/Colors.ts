@@ -29,7 +29,7 @@ export const C = {
   success: "#42b968",
   info: "#8cc5ff",
   error: "#fcaea4",
-  "1": "#6D57FC",
+  "1": "#3b82f6",
   "2": "#261E58",
   "3": "#0C0A1C",
   "4": "#E8E4FF",

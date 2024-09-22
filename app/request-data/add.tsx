@@ -6,11 +6,12 @@ import {
   ScrollView,
   TextInput,
   KeyboardAvoidingView,
+  Pressable,
 } from "react-native";
 import { Inter } from "@/constants/Fonts";
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { CustomInputText } from "@/components/ui/CustomInputText";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 
 export default function AddRequestData() {
   useNavigation().setOptions({
@@ -19,9 +20,14 @@ export default function AddRequestData() {
   return (
     <SafeAreaView>
       <KeyboardAvoidingView className="px-4 pt-8 flex flex-col h-screen">
-        <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
-          Buat Permintaan
-        </Text>
+        <View className="flex flex-row items-center space-x-2">
+          <Pressable onPress={() => router.back()}>
+            <Ionicons name="chevron-back" size={24} color="black" />
+          </Pressable>
+          <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
+            Buat Permintaan
+          </Text>
+        </View>
         <ScrollView className="mt-8 space-y-4">
           <View className="w-full h-40 rounded-lg border-2 border-neutral-300 overflow-hidden shadow-sm">
             <Image
@@ -64,7 +70,9 @@ export default function AddRequestData() {
             />
             <View className=" mb-4 flex flex-row items-center self-center">
               <Text className="text-sm" style={Inter}>
-                Saya menyutujui <Text className="text-custom-1">syarat dan ketentuan</Text> yang berlaku
+                Saya menyutujui{" "}
+                <Text className="text-custom-1">syarat dan ketentuan</Text> yang
+                berlaku
               </Text>
             </View>
             <View className="bg-custom-1 px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2">

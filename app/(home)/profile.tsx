@@ -9,20 +9,47 @@ import {
 import { Inter } from "@/constants/Fonts";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
+import { logout } from "@/services/auth";
+import { useEffect, useState } from "react";
+import { initSavedProfile, SavedProfile } from "@/models/SavedProfile";
+import { getSavedProfile } from "@/services/account";
+import ModalActionImage from "@/components/ui/ModalActionImage";
 
 export default function ProfileScreen() {
   useNavigation().setOptions({
     headerShown: false,
   });
 
+  const [prof, setProf] = useState<SavedProfile>(initSavedProfile);
+
+  const fetchResult = async () => {
+    const result = await getSavedProfile();
+    console.log(result);
+    setProf({
+      accessToken: result.accessToken || "",
+      refreshToken: result.refreshToken || "",
+      name: result.name || "",
+      email: result.email || "",
+      phone: result.phone || "",
+      picture: result.picture || "",
+    });
+  };
+
+  useEffect(() => {
+    fetchResult();
+  }, []);
+
   return (
     <SafeAreaView>
+      
       <ScrollView className="px-4 pt-8 flex flex-col h-screen space-y-8">
         <View className="relative w-32 h-32 self-center">
           <Image
-            source={{
-              uri: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541",
-            }}
+            source={
+              prof.picture === ""
+                ? require("@/assets/profile.png")
+                : { uri: prof.picture }
+            }
             width={49}
             height={49}
             className="rounded-full w-full h-full object-cover"
@@ -36,19 +63,20 @@ export default function ProfileScreen() {
             className="text-black text-2xl self-center font-semibold text-center"
             style={Inter}
           >
-            Ghufron Akbar Maulana
+            {prof.name}
           </Text>
           <Text
             className="text-neutral-600 text-base self-center font-medium text-center"
             style={Inter}
           >
-            lanstheprodigy@gmail.com
+            {prof.email}
           </Text>
           <Text
             className="text-neutral-600 text-base self-center font-medium text-center"
             style={Inter}
           >
-            +62 851-5603-1385
+            +{prof.phone.slice(0, 2)} {prof.phone.slice(2, 5)}-
+            {prof.phone.slice(5, 9)}-{prof.phone.slice(9)}
           </Text>
         </View>
         <View className="bg-custom-1 border border-neutral-200 rounded-xl p-4 flex flex-row justify-around">
@@ -126,6 +154,6 @@ const MENUS: MenuProfile[] = [
   {
     name: "Keluar",
     icon: <MaterialCommunityIcons name="logout" size={18} color="#525252" />,
-    onPress: null,
+    onPress: () => logout(),
   },
 ];
