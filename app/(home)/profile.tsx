@@ -240,22 +240,22 @@ interface MenuProfile {
 const MENUS: MenuProfile[] = [
   {
     name: "Riwayat Input Satwa",
-    icon: <MaterialCommunityIcons name="bird" size={18} color="#6D57FC" />,
+    icon: <MaterialCommunityIcons name="bird" size={18} color="#3b82f6" />,
     onPress: () => router.push("/(home)/history"),
   },
   {
     name: "Ubah Kata Sandi",
-    icon: <MaterialCommunityIcons name="lock" size={18} color="#6D57FC" />,
+    icon: <MaterialCommunityIcons name="lock" size={18} color="#3b82f6" />,
     onPress: () => router.push("/feature/change-password"),
   },
   {
     name: "Ubah Nomor Telepon",
-    icon: <MaterialCommunityIcons name="phone" size={18} color="#6D57FC" />,
+    icon: <MaterialCommunityIcons name="phone" size={18} color="#3b82f6" />,
     onPress: () => router.push("/feature/change-phone"),
   },
   {
     name: "Permintaan Data Satwa",
-    icon: <MaterialCommunityIcons name="database" size={18} color="#6D57FC" />,
+    icon: <MaterialCommunityIcons name="database" size={18} color="#3b82f6" />,
     onPress: () => router.push("/request-data"),
   },
   {

@@ -4,18 +4,16 @@ import {
   SafeAreaView,
   ScrollView,
   Pressable,
-  Alert,
   ActivityIndicator,
 } from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { CustomInputText } from "@/components/ui/CustomInputText";
 import { router, useNavigation } from "expo-router";
-import { useState } from "react";
-import { FormLogin, initFormLogin, login } from "@/services/auth";
+import { useEffect, useState } from "react";
+import { FormLogin, initFormLogin, login, refresh } from "@/services/auth";
 import Toast from "react-native-toast-message";
 import SpinnerLoading from "@/components/ui/SpinnerLoading";
 import { getProfile } from "@/services/account";
-import { isLoading } from "expo-font";
 
 export default function LoginScreen() {
   useNavigation().setOptions({
@@ -23,10 +21,28 @@ export default function LoginScreen() {
   });
 
   const [form, setForm] = useState<FormLogin>(initFormLogin);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [pending, setPending] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const handleAuthCheck = async () => {
+      try {
+        await refresh();
+        router.push("/(home)");
+      } catch (error) {
+        Toast.show({
+          type: "error",
+          text1: "Sesi Kadaluarsa",
+          text2: "Silahkan login kembali",
+        });
+        setLoading(false);
+      }
+    };
+
+    handleAuthCheck();
+  }, []);
 
   const handleLogin = async () => {
-    console.log("press", form);
     if (form.email == "" || form.password == "") {
       Toast.show({
         type: "error",
@@ -35,7 +51,7 @@ export default function LoginScreen() {
       });
       return;
     }
-    setLoading(true);
+    setPending(true);
     try {
       await login(form);
       await getProfile();
@@ -46,17 +62,20 @@ export default function LoginScreen() {
         text2: "Selamat Datang di Lestari",
       });
     } catch (error: any) {
-      console.log(error);
       Toast.show({
         type: "error",
         text1: "Login Gagal",
         text2: error?.message || "Terjadi kesalahan saat login",
       });
     } finally {
-      setLoading(false);
+      setPending(false);
       setForm(initFormLogin);
     }
   };
+
+  if (loading) {
+    return <SpinnerLoading />;
+  }
 
   return (
     <SafeAreaView className="flex-1 ">
@@ -87,9 +106,9 @@ export default function LoginScreen() {
               <View className="mt-4">
                 <Pressable
                   className="bg-custom-1 px-2 py-2 rounded-lg flex items-center justify-center h-10 space-x-2"
-                  onPress={loading ? () => {} : handleLogin}
+                  onPress={pending ? () => {} : handleLogin}
                 >
-                  {loading ? (
+                  {pending ? (
                     <ActivityIndicator size="small" color="white" />
                   ) : (
                     <Text
@@ -109,7 +128,7 @@ export default function LoginScreen() {
               </View>
               <Pressable
                 className="bg-white border-custom-1 border px-2 py-2 rounded-lg flex items-center justify-center h-10 space-x-2"
-                onPress={loading ? () => {} : () => router.push("/register")}
+                onPress={pending ? () => {} : () => router.push("/register")}
               >
                 <Text
                   className="text-sm text-custom-1 text-center"

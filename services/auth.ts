@@ -105,5 +105,5 @@ export const logout = async () => {
     AsyncStorage.removeItem(PHONE),
     AsyncStorage.removeItem(PICTURE),
   ]);
-  router.replace("/login");
+  router.replace({ pathname: "/" });
 };

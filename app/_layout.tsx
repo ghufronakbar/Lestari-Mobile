@@ -13,7 +13,7 @@ export default function Layout() {
     Inter: require("../assets/fonts/Inter.ttf"),
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-  const [loading, setLoading] = useState<boolean>(true);
+  // const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (fontsLoaded) {
@@ -21,27 +21,27 @@ export default function Layout() {
     }
   }, [fontsLoaded]);
 
-  useEffect(() => {
-    const handleAuthCheck = async () => {
-      try {
-        await refresh();
-        router.push("/(home)");
-      } catch (error) {
-        Toast.show({
-          type: "error",
-          text1: "Sesi Kadaluarsa",
-          text2: "Silahkan login kembali",
-        });
-        router.push("/login");
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleAuthCheck = async () => {
+  //     try {
+  //       await refresh();
+  //       router.push("/(home)");
+  //     } catch (error) {
+  //       Toast.show({
+  //         type: "error",
+  //         text1: "Sesi Kadaluarsa",
+  //         text2: "Silahkan login kembali",
+  //       });
+  //       router.push("/login");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    if (loading || !fontsLoaded) {
-      handleAuthCheck();
-    }
-  }, [loading]);
+  //   if (loading || !fontsLoaded) {
+  //     handleAuthCheck();
+  //   }
+  // }, [loading]);
   return (
     <View style={{ flex: 1 }}>
       <Slot />
