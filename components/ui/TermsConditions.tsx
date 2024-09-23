@@ -1,4 +1,9 @@
 import { Inter } from "@/constants/Fonts";
+import {
+  TERMS_CONDITIONS_REQUEST_ACCOUNT,
+  TERMS_CONDITIONS_REQUEST_DATA,
+} from "@/data/termsCondition";
+import formatDate from "@/utils/formatDate";
 import { AntDesign } from "@expo/vector-icons";
 import {
   Modal,
@@ -13,13 +18,19 @@ interface TermsConditionsProps {
   visible: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  type: "data" | "account";
 }
 
 const TermsConditions = ({
   visible,
   onClose,
   onConfirm,
+  type,
 }: TermsConditionsProps) => {
+  const TNC =
+    type === "data"
+      ? TERMS_CONDITIONS_REQUEST_DATA
+      : TERMS_CONDITIONS_REQUEST_ACCOUNT;
   return (
     <Modal
       visible={visible}
@@ -32,66 +43,50 @@ const TermsConditions = ({
           <Pressable onPress={onClose}>
             <AntDesign name="close" size={24} color="black" />
           </Pressable>
-          <Text className="font-bold text-lg">Syarat dan Ketentuan</Text>
+          <Text className="font-bold text-lg">{TNC.title}</Text>
           <AntDesign name="close" size={24} color="transparent" />
         </View>
-        <ScrollView className="flex-1 px-4">
-          <Text
-            className="text-justify text-base text-neutral-950"
-            style={Inter}
-          >
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Fuga est
-            doloribus ab reiciendis accusantium vero, modi expedita voluptatum
-            libero, illum et aliquid amet ipsa delectus sequi. Debitis rerum
-            nesciunt dolores, recusandae fugit iste aliquid aspernatur
-            reiciendis nulla! Perspiciatis eaque voluptatem rerum totam, tempore
-            temporibus repellat quidem architecto consectetur accusantium labore
-            magni, ipsum eligendi delectus omnis sunt incidunt iure dolorem
-            fugit blanditiis repudiandae, nisi consequuntur quaerat? Temporibus
-            nulla totam aliquam tempore maiores molestias quas, eligendi a quam
-            unde minus, voluptatum neque quos sint, autem alias deleniti
-            blanditiis in suscipit molestiae eius. Eum nostrum eos obcaecati
-            iure commodi assumenda voluptatem eius aliquam! Lorem ipsum dolor
-            sit amet consectetur, adipisicing elit. Fuga est doloribus ab
-            reiciendis accusantium vero, modi expedita voluptatum libero, illum
-            et aliquid amet ipsa delectus sequi. Debitis rerum nesciunt dolores,
-            recusandae fugit iste aliquid aspernatur reiciendis nulla!
-            Perspiciatis eaque voluptatem rerum totam, tempore temporibus
-            repellat quidem architecto consectetur accusantium labore magni,
-            ipsum eligendi delectus omnis sunt incidunt iure dolorem fugit
-            blanditiis repudiandae, nisi consequuntur quaerat? Temporibus nulla
-            totam aliquam tempore maiores molestias quas, eligendi a quam unde
-            minus, voluptatum neque quos sint, autem alias deleniti blanditiis
-            in suscipit molestiae eius. Eum nostrum eos obcaecati iure commodi
-            assumenda voluptatem eius aliquam! Lorem ipsum dolor sit amet
-            consectetur, adipisicing elit. Fuga est doloribus ab reiciendis
-            accusantium vero, modi expedita voluptatum libero, illum et aliquid
-            amet ipsa delectus sequi. Debitis rerum nesciunt dolores, recusandae
-            fugit iste aliquid aspernatur reiciendis nulla! Perspiciatis eaque
-            voluptatem rerum totam, tempore temporibus repellat quidem
-            architecto consectetur accusantium labore magni, ipsum eligendi
-            delectus omnis sunt incidunt iure dolorem fugit blanditiis
-            repudiandae, nisi consequuntur quaerat? Temporibus nulla totam
-            aliquam tempore maiores molestias quas, eligendi a quam unde minus,
-            voluptatum neque quos sint, autem alias deleniti blanditiis in
-            suscipit molestiae eius. Eum nostrum eos obcaecati iure commodi
-            assumenda voluptatem eius aliquam! Lorem ipsum dolor sit amet
-            consectetur, adipisicing elit. Fuga est doloribus ab reiciendis
-            accusantium vero, modi expedita voluptatum libero, illum et aliquid
-            amet ipsa delectus sequi. Debitis rerum nesciunt dolores, recusandae
-            fugit iste aliquid aspernatur reiciendis nulla! Perspiciatis eaque
-            voluptatem rerum totam, tempore temporibus repellat quidem
-            architecto consectetur accusantium labore magni, ipsum eligendi
-            delectus omnis sunt incidunt iure dolorem fugit blanditiis
-            repudiandae, nisi consequuntur quaerat? Temporibus nulla totam
-            aliquam tempore maiores molestias quas, eligendi a quam unde minus,
-            voluptatum neque quos sint, autem alias deleniti blanditiis in
-            suscipit molestiae eius. Eum nostrum eos obcaecati iure commodi
-            assumenda voluptatem eius aliquam!
+        <ScrollView className="flex-1 px-4 space-y-4">
+          {TNC.sections.map((section, index) => (
+            <View key={index} className="space-y-2">
+              <Text
+                className="text-base font-bold text-neutral-950"
+                style={Inter}
+              >
+                {section.title}
+              </Text>
+              <Text
+                className="text-start text-base text-neutral-950"
+                style={Inter}
+              >
+                <View className="space-y-2">
+                  {section.content.map((content, index) => (
+                    <View key={index}>
+                      <Text
+                        className="text-start text-base font-medium text-neutral-950"
+                        style={Inter}
+                      >
+                        {content.sub_title}
+                      </Text>
+                      <Text
+                        className="text-start text-base text-neutral-950"
+                        style={Inter}
+                      >
+                        {content.text}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </Text>
+            </View>
+          ))}
+
+          <Text className="text-start text-neutral-950 text-sm" style={Inter}>
+            Terakhir diperbarui pada: {formatDate(TNC.last_updated)}
           </Text>
           <View className="flex flex-row flex-wrap items-center justify-center space-x-2 mt-8">
             <Text className="text-base font-medium text-center">
-              Saya menyutujui syarat dan ketentuan yang berlaku
+              {TNC.acceptance}
             </Text>
             <Pressable
               className="flex flex-row items-center space-x-2 rounded-full bg-custom-1 px-4 py-2 mt-8"

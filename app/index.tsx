@@ -57,6 +57,7 @@ export default function LoginScreen() {
     try {
       await login(form);
       await getProfile();
+      await getOverview();
       router.push("/(home)");
       Toast.show({
         type: "success",
@@ -83,7 +84,7 @@ export default function LoginScreen() {
     <SafeAreaView className="flex-1 ">
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
-        className="px-4 flex "
+        className="px-4 flex bg-neutral-50"
       >
         <View className="flex-1 justify-center items-center">
           <View className="w-full rounded-lg">
@@ -124,7 +125,9 @@ export default function LoginScreen() {
                 </Pressable>
                 <View className="flex flex-row justify-between items-center my-6">
                   <View className="h-px w-[30%] bg-neutral-200" />
-                  <Text style={Inter}>Belum Memiliki Akun</Text>
+                  <Text className="text-black" style={Inter}>
+                    Belum Memiliki Akun
+                  </Text>
                   <View className="h-px w-[30%] bg-neutral-200" />
                 </View>
               </View>

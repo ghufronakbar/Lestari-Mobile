@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { View, Text, Pressable } from "react-native";
 import Toast from "react-native-toast-message";
 
-const Overview = () => {
+const OverviewScreen = () => {
   const [data, setData] = useState<Overview>(initOverview);
 
   const fetchData = async () => {
@@ -31,7 +31,7 @@ const Overview = () => {
         text1: "Sukses",
         text2: "Berhasil Refresh Data",
       });
-    } catch (error) {
+    } catch (error) {      
       const err = error as ResponseFail;
       Toast.show({
         type: "error",
@@ -67,4 +67,4 @@ const Overview = () => {
   );
 };
 
-export default Overview;
+export default OverviewScreen;

@@ -10,7 +10,6 @@ import {
 import { Response } from "@/models/Response";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import Toast from "react-native-toast-message";
 
 interface LoginResponse extends Response {
   data: {
@@ -98,10 +97,4 @@ export const refresh = async (): Promise<LoginResponse | null> => {
 
 export const logout = async () => {
   await AsyncStorage.clear();
-  Toast.show({
-    type: "info",
-    text1: "Logout",
-    text2: "Berhasil keluar dari akun",
-  });
-  router.replace({ pathname: "/" });
 };

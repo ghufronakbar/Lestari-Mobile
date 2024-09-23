@@ -254,6 +254,7 @@ export default function AddRequestData() {
         </ScrollView>
         <TermsConditions
           visible={isConfirmOpen}
+          type="data"
           onClose={() => {
             setIsConfirmOpen(false);
           }}

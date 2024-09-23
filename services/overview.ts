@@ -9,7 +9,7 @@ interface ResposneOverview extends Response {
 }
 export const getOverview = async (): Promise<ResposneOverview> => {
   try {
-    const { data } = await axiosInstance.get<ResposneOverview>("/suggestion");
+    const { data } = await axiosInstance.get<ResposneOverview>("/overview");
     await AsyncStorage.setItem(TOTAL_ANIMAL, data.data.totalAnimal.toString());
     await AsyncStorage.setItem(TOTAL_WEEKLY, data.data.totalWeekly.toString());
     return data;
@@ -20,7 +20,7 @@ export const getOverview = async (): Promise<ResposneOverview> => {
 
 export const refreshOverview = async (): Promise<ResposneOverview> => {
   try {
-    const { data } = await axiosInstance.post<ResposneOverview>("/suggestion");
+    const { data } = await axiosInstance.post<ResposneOverview>("/overview");
     await AsyncStorage.setItem(TOTAL_ANIMAL, data.data.totalAnimal.toString());
     await AsyncStorage.setItem(TOTAL_WEEKLY, data.data.totalWeekly.toString());
     return data;

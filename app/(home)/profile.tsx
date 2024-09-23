@@ -19,7 +19,7 @@ import {
   getSavedProfile,
 } from "@/services/account";
 import ModalActionImage from "@/components/ui/ModalActionImage";
-import Overview from "@/components/ui/Overview";
+import Overview from "@/components/ui/OverviewScreen";
 import compressImage from "@/utils/compressImage";
 import { ImageResult } from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
@@ -261,6 +261,9 @@ const MENUS: MenuProfile[] = [
   {
     name: "Keluar",
     icon: <MaterialCommunityIcons name="logout" size={18} color="#525252" />,
-    onPress: () => logout(),
+    onPress: () => {
+      router.replace({ pathname: "/logout" });
+      logout();
+    },
   },
 ];

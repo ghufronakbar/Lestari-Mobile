@@ -166,6 +166,7 @@ export default function RegisterScreen() {
       </KeyboardAvoidingView>
       <TermsConditions
         visible={isConfirmOpen}
+        type="account"
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={() => {
           setIsConfirmed(true);

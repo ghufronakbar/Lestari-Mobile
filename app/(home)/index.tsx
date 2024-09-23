@@ -17,7 +17,7 @@ import { getSavedProfile } from "@/services/account";
 import greet from "@/helpers/greet";
 import { Animal } from "@/models/Animal";
 import { getAllAnimals } from "@/services/animal";
-import Overview from "@/components/ui/Overview";
+import Overview from "@/components/ui/OverviewScreen";
 import { C } from "@/constants/Colors";
 
 export default function HomeScreen() {
