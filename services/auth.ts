@@ -82,6 +82,7 @@ export const refresh = async (): Promise<LoginResponse | null> => {
       throw new Error("Invalid response structure: Tokens not found");
     }
   } catch (error: any) {
+    await AsyncStorage.clear();
     if (error.response) {
       console.error("Refresh error response:", error.response.data);
       throw new Error(error.response.data.message || "Failed to refresh token");
