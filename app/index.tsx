@@ -14,6 +14,7 @@ import { FormLogin, initFormLogin, login, refresh } from "@/services/auth";
 import Toast from "react-native-toast-message";
 import SpinnerLoading from "@/components/ui/SpinnerLoading";
 import { getProfile } from "@/services/account";
+import { getOverview } from "@/services/overview";
 
 export default function LoginScreen() {
   useNavigation().setOptions({
@@ -28,6 +29,7 @@ export default function LoginScreen() {
     const handleAuthCheck = async () => {
       try {
         await refresh();
+        await getOverview();
         router.push("/(home)");
       } catch (error) {
         Toast.show({
