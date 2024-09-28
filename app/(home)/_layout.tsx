@@ -1,9 +1,12 @@
-import { Tabs } from "expo-router";
+import { Tabs, useNavigation } from "expo-router";
 import React from "react";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { C } from "@/constants/Colors";
 
 export default function TabLayout() {
+  useNavigation().setOptions({
+    headerShown: false,
+  });
   return (
     <Tabs
       screenOptions={{

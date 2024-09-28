@@ -1,11 +1,11 @@
 import { useFonts } from "expo-font";
-import { Slot, SplashScreen } from "expo-router";
+import { router, Slot, SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { View } from "react-native";
 import Toast from "react-native-toast-message";
 import { LogBox } from "react-native";
 
-LogBox.ignoreAllLogs();
+// LogBox.ignoreAllLogs();
 SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
@@ -18,12 +18,15 @@ export default function Layout() {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded]);  
   
   return (
-    <View style={{ flex: 1 }}>
-      <Slot />
+    <>
+      {/* <View style={{ flex: 1 }}> */}
+      {/* <Slot /> */}
+      <Stack/>
       <Toast />
-    </View>
+    {/* </View> */}
+    </>
   );
 }

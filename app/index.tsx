@@ -30,7 +30,7 @@ export default function LoginScreen() {
       try {
         await refresh();
         await getOverview();
-        router.push("/(home)");
+        router.replace("/(home)");
       } catch (error) {
         Toast.show({
           type: "error",

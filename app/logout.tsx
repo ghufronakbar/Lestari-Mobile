@@ -1,9 +1,12 @@
 import SpinnerLoading from "@/components/ui/SpinnerLoading";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { useEffect } from "react";
 import Toast from "react-native-toast-message";
 
 const LogoutScreen = () => {
+  useNavigation().setOptions({
+    headerShown: false,
+  });
   useEffect(() => {
     setTimeout(() => {
       Toast.show({
