@@ -5,7 +5,7 @@ import { View } from "react-native";
 import Toast from "react-native-toast-message";
 import { LogBox } from "react-native";
 
-// LogBox.ignoreAllLogs();
+LogBox.ignoreAllLogs();
 SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
