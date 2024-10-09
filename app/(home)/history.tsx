@@ -23,6 +23,7 @@ import { getAllAnimals } from "@/services/animal";
 import { C } from "@/constants/Colors";
 import { initLimitation, Limitation } from "@/models/Limitation";
 import SpinnerLoading from "@/components/ui/SpinnerLoading";
+import Toast from "react-native-toast-message";
 
 export default function HistoryScreen() {
   const [data, setData] = useState<Animal[]>([]);
@@ -35,16 +36,26 @@ export default function HistoryScreen() {
     headerShown: false,
   });
   const fetchData = async () => {
-    setLoading(true);
-    Keyboard.dismiss();
-    const response = await getAllAnimals(
-      search,
-      limit,
-      checked ? "editable" : undefined
-    );
-    setData(response.data);
-    setLimitation(response.limitation);
-    setLoading(false);
+    try {
+      setLoading(true);
+      Keyboard.dismiss();
+      const response = await getAllAnimals(
+        search,
+        limit,
+        checked ? "editable" : undefined
+      );
+      setData(response.data);
+      setLimitation(response.limitation);
+    } catch (error) {
+      console.log(error);
+      Toast.show({
+        type: "error",
+        text1: "Terjadi kesalahan",
+        text2: "Gagal memuat data",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
   useEffect(() => {
     fetchData();
@@ -85,7 +96,7 @@ export default function HistoryScreen() {
           />
         </View>
         <ScrollView className="mt-8">
-          {data.length === 0? (
+          {data.length === 0 ? (
             <View className="w-full h-full flex flex-col items-center justify-center">
               <Text
                 className="text-lg text-neutral-950 font-medium text-center"
@@ -100,15 +111,16 @@ export default function HistoryScreen() {
               <Card key={item.animalId} item={item} />
             ))}
           </CardContainer>
-          {limitation.currentData < limitation.totalData && limitation.totalData > 0 && (
-            <Pressable
-              className="flec flex-row items-center justify-center self-center space-x-2 mt-4"
-              onPress={() => setLimit(limit + 10)}
-            >
-              <Ionicons name="add" size={20} color="black" />
-              <Text>Tampilkan Lebih Banyak</Text>
-            </Pressable>
-          )}
+          {limitation.currentData < limitation.totalData &&
+            limitation.totalData > 0 && (
+              <Pressable
+                className="flec flex-row items-center justify-center self-center space-x-2 mt-4"
+                onPress={() => setLimit(limit + 10)}
+              >
+                <Ionicons name="add" size={20} color="black" />
+                <Text>Tampilkan Lebih Banyak</Text>
+              </Pressable>
+            )}
           <View className="h-96" />
         </ScrollView>
       </View>

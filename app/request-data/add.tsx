@@ -88,6 +88,7 @@ export default function AddRequestData() {
       setIsConfirmOpen(false);
       setIsConfirmed(false);
     } catch (error) {
+      console.log(error);
       const err = error as ResponseFail;
       Toast.show({
         type: "error",

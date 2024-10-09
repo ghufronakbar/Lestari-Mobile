@@ -41,7 +41,7 @@ export default function AddAnimalScreen() {
   const [isPickImage, setIsPickImage] = useState<boolean>(false);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isMapOpen, setIsMapOpen] = useState<boolean>(false);
-  
+
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [isSuggestionOpen, setIsSuggestionOpen] = useState<boolean>(false);
 
@@ -68,7 +68,6 @@ export default function AddAnimalScreen() {
     500,
     [form.localName, form.latinName]
   );
-
 
   const toastPending = () => {
     Toast.show({
@@ -173,9 +172,18 @@ export default function AddAnimalScreen() {
       setForm(initFormAnimal);
       setSelectedImage(null);
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
+      console.log(error);
       setLoading(false);
       const err = error as ResponseFail;
+      if (error.code === "ERR_NETWORK") {
+        Toast.show({
+          type: "error",
+          text1: "Gagal",
+          text2: "Periksa kembali koneksi internet",
+        });
+        return;
+      }
       Toast.show({
         type: "error",
         text1: "Gagal",
