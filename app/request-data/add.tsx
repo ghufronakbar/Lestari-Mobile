@@ -163,7 +163,7 @@ export default function AddRequestData() {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
       <ModalActionImage
         title="Unggah Lampiran"
         message="Pilih aksi untuk melanjutkan"
@@ -172,8 +172,8 @@ export default function AddRequestData() {
         onCamera={handlePickCamera}
         onGallery={handlePickGallery}
       />
-      <KeyboardAvoidingView className="px-4 pt-8 flex flex-col h-screen">
-        <View className="flex flex-row items-center space-x-2">
+      <KeyboardAvoidingView className=" flex flex-col h-screen">
+        <View className="flex flex-row items-center my-3 space-x-2">
           <Pressable onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={24} color="black" />
           </Pressable>
@@ -181,7 +181,7 @@ export default function AddRequestData() {
             Buat Permintaan
           </Text>
         </View>
-        <ScrollView className="mt-8 space-y-4">
+        <ScrollView className=" px-4 space-y-4">
           <View className="w-full h-40 rounded-lg border-2 border-neutral-300 overflow-hidden shadow-sm">
             <Image
               source={

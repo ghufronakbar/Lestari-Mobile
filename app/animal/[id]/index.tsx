@@ -104,7 +104,7 @@ export default function DetailScreen() {
               {data.localName}
             </Text>
             <Text
-              className="text-lg text-neutral-600 font-semibold"
+              className="text-lg text-neutral-600 font-semibold italic"
               style={Inter}
             >
               {data.latinName}
@@ -124,7 +124,7 @@ export default function DetailScreen() {
             />
           )}
         </View>
-        <ScrollView horizontal>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View className="flex flex-row space-x-1">
             <View className="flex flex-row gap-1 items-center mr-1">
               <FontAwesome6 name="envira" size={18} color="#42b968" />
@@ -236,7 +236,7 @@ export default function DetailScreen() {
             ? require("@/assets/placeholder.jpg")
             : { uri: data.image }
         }
-        title={data.latinName}
+        title={data.localName}
       />
     </ParallaxScrollView>
   );

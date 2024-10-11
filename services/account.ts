@@ -109,7 +109,12 @@ export const changePicture = async (
     } as any);
     const { data } = await axiosInstance.put<ProfileResponse>(
       "/account/picture",
-      formData
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
     );
     await AsyncStorage.setItem(PICTURE, data.data.picture || "");
     return data;

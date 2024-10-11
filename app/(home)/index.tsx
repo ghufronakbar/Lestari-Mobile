@@ -55,8 +55,8 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <SafeAreaView>
-      <ScrollView className="px-4 pt-8 space-y-8 bg-neutral-50 min-h-screen">
+    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
+      <ScrollView className="px-4 space-y-8 bg-neutral-50 min-h-screen">
         <View className="flex flex-row justify-between items-center">
           <View className="flex flex-col gap-2">
             <Text
@@ -114,7 +114,7 @@ export default function HomeScreen() {
           </View>
           <ScrollView horizontal>
             {data.map((item) => (
-              <Card key={item.animalId} item={item} />
+              <Card key={item.animalId} item={item} isPadding  />
             ))}
           </ScrollView>
           {loading && (

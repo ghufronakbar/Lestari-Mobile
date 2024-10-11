@@ -11,6 +11,7 @@ import {
   StyleSheet,
   Dimensions,
   ImageSourcePropType,
+  Platform,
 } from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
@@ -59,8 +60,8 @@ export default function DetailRequestDataScreen() {
   };
 
   return (
-    <SafeAreaView>
-      <View className="px-4 pt-8 flex flex-col h-screen space-y-4">
+    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
+      <View className="px-4 flex flex-col h-screen space-y-4">
         <View className="flex flex-row items-center space-x-2">
           <Pressable onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={24} color="black" />

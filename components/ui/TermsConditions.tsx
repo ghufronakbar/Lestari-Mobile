@@ -12,93 +12,68 @@ import {
   ScrollView,
   Text,
   View,
+  Platform
 } from "react-native";
-
 interface TermsConditionsProps {
   visible: boolean;
   onClose: () => void;
   onConfirm: () => void;
   type: "data" | "account";
 }
-
 const TermsConditions = ({
   visible,
   onClose,
   onConfirm,
   type,
-}: TermsConditionsProps) => {
+}:TermsConditionsProps) => {
   const TNC =
     type === "data"
       ? TERMS_CONDITIONS_REQUEST_DATA
       : TERMS_CONDITIONS_REQUEST_ACCOUNT;
+
   return (
     <Modal
       visible={visible}
       onRequestClose={onClose}
       animationType="slide"
+      transparent={true}
       presentationStyle="pageSheet"
     >
-      <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-        <View className="flex flex-row items-center justify-between p-4 bg-white z-10">
+      <SafeAreaView style={{ flex: 1, backgroundColor: "white", paddingTop: Platform.OS === 'android' ? 25 : 0 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 16, backgroundColor: 'white' }}>
           <Pressable onPress={onClose}>
             <AntDesign name="close" size={24} color="black" />
           </Pressable>
-          <Text className="font-bold text-lg">{TNC.title}</Text>
+          <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{TNC.title}</Text>
           <AntDesign name="close" size={24} color="transparent" />
         </View>
-        <ScrollView className="flex-1 px-4 space-y-4">
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
           {TNC.sections.map((section, index) => (
-            <View key={index} className="space-y-2">
-              <Text
-                className="text-base font-bold text-neutral-950"
-                style={Inter}
-              >
-                {section.title}
-              </Text>
-              <Text
-                className="text-start text-base text-neutral-950"
-                style={Inter}
-              >
-                <View className="space-y-2">
-                  {section.content.map((content, index) => (
-                    <View key={index}>
-                      <Text
-                        className="text-start text-base font-medium text-neutral-950"
-                        style={Inter}
-                      >
-                        {content.sub_title}
-                      </Text>
-                      <Text
-                        className="text-start text-base text-neutral-950"
-                        style={Inter}
-                      >
-                        {content.text}
-                      </Text>
-                    </View>
-                  ))}
+            <View key={index} style={{ marginBottom: 16 }}>
+              <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{section.title}</Text>
+              {section.content.map((content, idx) => (
+                <View key={idx}>
+                  <Text style={{ fontWeight: '500', fontSize: 14 }}>{content.sub_title}</Text>
+                  <Text>{content.text}</Text>
                 </View>
-              </Text>
+              ))}
             </View>
           ))}
-
-          <Text className="text-start text-neutral-950 text-sm" style={Inter}>
+          <Text style={{ fontSize: 12 }}>
             Terakhir diperbarui pada: {formatDate(TNC.last_updated)}
           </Text>
-          <View className="flex flex-row flex-wrap items-center justify-center space-x-2 mt-8">
-            <Text className="text-base font-medium text-center">
+          <View style={{ marginTop: 16, alignItems: 'center' }}>
+            <Text style={{ fontWeight: '500', textAlign: 'center' }}>
               {TNC.acceptance}
             </Text>
             <Pressable
-              className="flex flex-row items-center space-x-2 rounded-full bg-custom-1 px-4 py-2 mt-8"
               onPress={onConfirm}
+              style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#007BFF', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 8, marginTop: 16 }}
             >
               <AntDesign name="check" size={16} color="white" />
-              <Text className="text-base text-white" style={Inter}>
-                Setuju
-              </Text>
+              <Text style={{ color: 'white', marginLeft: 8 }}>Setuju</Text>
             </Pressable>
           </View>
-          <View className="h-40" />
         </ScrollView>
       </SafeAreaView>
     </Modal>

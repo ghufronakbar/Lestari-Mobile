@@ -261,7 +261,7 @@ export default function EditAnimalScreen() {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
       <ModalActionImage
         isVisible={isPickImage}
         message="Pilih Aksi Untuk Melanjutkan"
@@ -273,7 +273,7 @@ export default function EditAnimalScreen() {
         }}
         onDelete={selectedImage ? handleDeleteImage : undefined}
       />
-      <KeyboardAvoidingView className="px-4 pt-8 flex flex-col h-screen">
+      <KeyboardAvoidingView className="px-4 flex flex-col h-screen">
         <View className="flex flex-row items-center space-x-2">
           <Pressable onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={24} color="black" />

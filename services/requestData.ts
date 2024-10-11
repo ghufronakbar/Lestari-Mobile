@@ -54,7 +54,12 @@ export const createReqDataUser = async (
       type: "image/jpeg",
       name: "requestDataAttachment.jpg",
     } as any);
-    const { data } = await axiosInstance.post("/request-data", formData);
+    const { data } = await axiosInstance.post("/request-data", formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
     return data;
   } catch (error) {
     throw error;

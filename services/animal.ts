@@ -80,7 +80,12 @@ export const createAnimal = async (
   formData.append("latitude", form.latitude);
   formData.append("amount", form.amount.toString());
   try {
-    const { data } = await axiosInstance.post<Response>("/animal", formData);
+    const { data } = await axiosInstance.post<Response>("/animal", formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
     return data;
   } catch (error) {
     throw error;
@@ -113,7 +118,12 @@ export const editAnimalImage = async (
   try {
     const { data } = await axiosInstance.patch<Response>(
       `/animal/${id}`,
-      formData
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
     );
     return data;
   } catch (error) {

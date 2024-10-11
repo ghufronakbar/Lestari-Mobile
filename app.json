@@ -24,7 +24,11 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-        "ACCESS_FINE_LOCATION"
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "ACCESS_FINE_LOCATION",
+        "INTERNET"
       ],
       "googleMaps": {
         "apiKey": "AIzaSyC9gkfPHw8ENurnT4Yi2na5VQ3S7dzqnJc"
@@ -41,15 +45,15 @@
       "expo-font"
     ],
     "experiments": {
-      "typedRoutes": true
+      "typedRoutes": false
     },
     "extra": {
       "router": {
         "origin": false
-      },
-      "eas": {
-        "projectId": "72bc2013-8dfb-44bf-9214-1c1d5f501e34"
       }
+    },
+    "eas": {
+      "projectId": "72bc2013-8dfb-44bf-9214-1c1d5f501e34"
     }
   }
 }

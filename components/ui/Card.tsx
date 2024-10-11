@@ -13,13 +13,15 @@ export const CardContainer = ({ children }: { children?: React.ReactNode }) => {
 export const Card = ({
   item,
   className,
+  isPadding=false
 }: {
   item: Animal;
   className?: string;
+  isPadding?: boolean 
 }) => {
   return (
     <Pressable
-      className={`w-[45vw] h-60 border border-neutral-200 rounded-xl bg-white shadow-sm mb-2 overflow-hidden ${className}`}
+      className={ `${isPadding? "mr-2":""} ${className} w-[45vw] h-60 border border-neutral-200 rounded-xl bg-white shadow-sm mb-2 overflow-hidden`}
       onPress={() =>
         router.push({
           pathname: "/animal/[id]",
@@ -40,7 +42,7 @@ export const Card = ({
           {item.localName}
         </Text>
         <Text
-          className="text-neutral-600 text-sm font-medium"
+          className="text-neutral-600 text-sm font-medium italic"
           numberOfLines={1}
           style={Inter}
         >

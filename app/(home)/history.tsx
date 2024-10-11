@@ -55,12 +55,12 @@ export default function HistoryScreen() {
   }
 
   return (
-    <SafeAreaView>
-      <View className="px-4 pt-8 flex flex-col h-screen">
-        <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
+    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
+      <View className=" flex flex-col h-screen">
+        <Text className="text-4xl px-4 text-neutral-950 font-bold" style={Inter}>
           Riwayat
         </Text>
-        <View className="mt-8 flex flex-row justify-between">
+        <View className="mt-8 px-4 flex flex-row justify-between">
           <TextInput
             className="w-[80%] bg-white border border-neutral-200 rounded-l-lg px-4 py-2 h-12"
             placeholder="Cari..."
@@ -76,7 +76,7 @@ export default function HistoryScreen() {
             <Ionicons name="search" size={24} color="white" />
           </Pressable>
         </View>
-        <View className="mt-4 self-end flex flex-row items-center space-x-2">
+        <View className="mt-4 px-4 self-end flex flex-row items-center space-x-2">
           <Text className="text-black font-semibold">7 Hari Terakhir</Text>
           <Switch
             value={checked}
@@ -84,7 +84,7 @@ export default function HistoryScreen() {
             trackColor={{ false: "#767577", true: C[1] }}
           />
         </View>
-        <ScrollView className="mt-8">
+        <ScrollView className="mt-4 px-4">
           {data.length === 0? (
             <View className="w-full h-full flex flex-col items-center justify-center">
               <Text

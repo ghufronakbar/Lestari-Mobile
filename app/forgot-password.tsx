@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Pressable,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { CustomInputText } from "@/components/ui/CustomInputText";
@@ -60,9 +61,9 @@ export default function ForgotPasswordScreen() {
   };
 
   return (
-    <SafeAreaView>
-      <KeyboardAvoidingView className="px-4 pt-8 flex flex-col h-screen">
-        <View className="flex flex-row items-center space-x-2">
+    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
+      <KeyboardAvoidingView className=" flex flex-col h-screen">
+        <View className="flex px-4  flex-row items-center space-x-2">
           <Pressable onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={24} color="black" />
           </Pressable>
@@ -70,7 +71,7 @@ export default function ForgotPasswordScreen() {
             Reset Kata Sandi
           </Text>
         </View>
-        <ScrollView className="mt-8 space-y-4">
+        <ScrollView className="mt-8 px-4  space-y-4">
           <View className="flex flex-col">
             <CustomInputText
               label="Email"

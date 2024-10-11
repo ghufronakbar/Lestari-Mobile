@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Pressable,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { CustomInputText } from "@/components/ui/CustomInputText";
@@ -80,8 +81,8 @@ export default function RegisterScreen() {
   };
 
   return (
-    <SafeAreaView>
-      <KeyboardAvoidingView className="px-4 pt-8 flex flex-col h-screen">
+    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
+      <KeyboardAvoidingView className="px-4 flex flex-col h-screen">
         <View className="flex flex-row items-center space-x-2">
           <Pressable onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={24} color="black" />

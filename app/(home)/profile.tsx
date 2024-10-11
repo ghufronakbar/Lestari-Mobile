@@ -36,7 +36,6 @@ export default function ProfileScreen() {
 
   const fetchResult = async () => {
     const result = await getSavedProfile();
-    console.log(result);
     setProf({
       accessToken: result.accessToken || "",
       refreshToken: result.refreshToken || "",
@@ -66,10 +65,13 @@ export default function ProfileScreen() {
       quality: 1,
     });
 
+
     if (!result.canceled) {
       setIsPickImage(false);
       try {
         const compressedImage = await compressImage(result.assets[0].uri);
+
+
         await changePicture(compressedImage);
         Toast.show({
           type: "success",
@@ -77,6 +79,10 @@ export default function ProfileScreen() {
           text2: "Berhasil mengganti foto profile",
         });
       } catch (error) {
+        console.log("error");
+        
+        console.log(JSON.stringify(error));
+        
         Toast.show({
           type: "error",
           text1: "Gagal",
@@ -149,7 +155,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
       <ModalActionImage
         isVisible={isPickImage}
         onCamera={handlePickCamera}
@@ -160,9 +166,9 @@ export default function ProfileScreen() {
         onDelete={prof.phone !== "" ? handleDeleteImage : undefined}
       />
 
-      <ScrollView className="px-4 pt-8 flex flex-col h-screen space-y-8">
+      <ScrollView className="px-4  flex flex-col h-screen space-y-8">
         <Pressable
-          className="relative w-32 h-32 self-center"
+          className="relative w-32  h-32 mt-10 self-center"
           onPress={() => {
             setIsPickImage(true);
           }}

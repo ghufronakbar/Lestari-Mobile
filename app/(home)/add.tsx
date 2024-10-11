@@ -222,7 +222,7 @@ export default function AddAnimalScreen() {
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
       <ModalActionImage
         isVisible={isPickImage}
         message="Pilih Aksi Untuk Melanjutkan"
@@ -234,13 +234,13 @@ export default function AddAnimalScreen() {
         }}
         onDelete={selectedImage ? handleDeleteImage : undefined}
       />
-      <KeyboardAvoidingView className="px-4 pt-8 flex flex-col h-screen">
-        <View className="flex flex-row items-center space-x-2">
+      <KeyboardAvoidingView className=" flex flex-col h-screen">
+        <View className="flex flex-row px-4 items-center space-x-2">
           <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
             Input Satwa
           </Text>
         </View>
-        <ScrollView className="mt-8 space-y-4">
+        <ScrollView className="mt-8 px-4 space-y-4">
           <View className="w-full h-40 rounded-lg border-2 border-neutral-300 overflow-hidden shadow-sm">
             <Image
               source={

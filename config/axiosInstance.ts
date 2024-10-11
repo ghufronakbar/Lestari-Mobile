@@ -6,7 +6,7 @@ import { setupCache } from "axios-cache-interceptor";
 
 const axiosInstance = setupCache(
   axios.create({
-    baseURL: `${SERVER_URL}/api/user`,
+    baseURL: `${SERVER_URL}/api/user`
     // baseURL: "http://192.168.100.24:5000/api/user",
   }),
   // {
