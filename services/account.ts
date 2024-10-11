@@ -98,36 +98,35 @@ export const changePhone = async (form: FormChangePhone): Promise<Response> => {
   }
 };
 
-export const changePicture = async (image: ImagePicker.ImagePickerAsset): Promise<any> => {
+export const changePicture = async (
+  image: ImagePicker.ImagePickerAsset
+): Promise<any> => {
+ 
   try {
     const formData = new FormData();
-    
+
     // Pastikan URI sesuai dengan platform (Android/iOS)
-    const uri = Platform.OS === 'android' ? image.uri.replace('file://', '') : image.uri;
+    const uri =
+      Platform.OS === "android" ? image.uri.replace("file://", "") : image.uri;
 
     formData.append("image", {
       uri: uri,
-      type: image.type || 'image/jpeg', // Tentukan tipe gambar
+      type: image.type || "image/jpeg", // Tentukan tipe gambar
       name: "profile.jpg",
-    }as any);
+    } as any);
 
-    const response = await fetch('https://api.lestarikehati.com/api/user/account/picture', {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${ACCESS_TOKEN}`,
-        'Accept': 'application/json',
-      },
-      body: formData
+    console.log({
+      uri: uri,
+      type: image.type || "image/jpeg", // Tentukan tipe gambar
+      name: "profile.jpg",
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to upload image');
-    }
+    const response = await axiosInstance.post("/account/picture", formData);
+    
+    
+    await AsyncStorage.setItem(PICTURE, response.data.data.picture || "");
 
-    const data = await response.json();
-    await AsyncStorage.setItem(PICTURE, data.data.picture || "");
-
-    return data;
+    return response.data;
   } catch (error) {
     console.error("Failed to upload image", error);
     throw error;
