@@ -6,8 +6,11 @@ import { setupCache } from "axios-cache-interceptor";
 
 const axiosCache = setupCache(
   axios.create({
-    baseURL: `${SERVER_URL}/api/user`,
+    // baseURL: `${SERVER_URL}/api/user`,
+    baseURL: `https://api.lestarikehati.com/api/user`,
     // baseURL: "http://192.168.100.24:5000/api/user",
+    maxBodyLength: Infinity,
+    maxContentLength: Infinity,
   }),
   {
     ttl: 1000 * 60 * 20,

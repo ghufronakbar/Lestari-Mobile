@@ -6,6 +6,7 @@ import {
   ScrollView,
   Pressable,
   Platform,
+  PermissionsAndroid,
 } from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -24,6 +25,7 @@ import compressImage from "@/utils/compressImage";
 import { ImageResult } from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
 import Toast from "react-native-toast-message";
+import { launchImageLibrary } from "react-native-image-picker";
 
 export default function ProfileScreen() {
   useNavigation().setOptions({
@@ -36,7 +38,6 @@ export default function ProfileScreen() {
 
   const fetchResult = async () => {
     const result = await getSavedProfile();
-    console.log(result);
     setProf({
       accessToken: result.accessToken || "",
       refreshToken: result.refreshToken || "",
@@ -51,68 +52,86 @@ export default function ProfileScreen() {
     fetchResult();
   }, []);
 
-  const handlePickGallery = async () => {
-    if (Platform.OS !== "web") {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
-        return;
-      }
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
+  
 
-    if (!result.canceled) {
-      setIsPickImage(false);
-      try {
-        const compressedImage = await compressImage(result.assets[0].uri);
-        await changePicture(compressedImage);
-        Toast.show({
-          type: "success",
-          text1: "Berhasil",
-          text2: "Berhasil mengganti foto profile",
-        });
-      } catch (error) {
-        Toast.show({
-          type: "error",
-          text1: "Gagal",
-          text2: "Gagal mengganti foto profile",
-        });
-      } finally {
-        await fetchResult();
-      }
+  const requestGalleryPermission = async () => {
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        {
+          title: "Permission to access storage",
+          message: "App needs access to your storage to select images",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK",
+        },
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
     }
+    return true; // On iOS, permission is automatically granted
   };
 
+  
+const handlePickGallery = async () => {
+  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (status !== 'granted') {
+    alert('Sorry, we need camera roll permissions to make this work!');
+    return;
+  }
+
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    quality: 1,
+  });
+
+  if (!result.canceled) {
+    console.log("Selected image: ", result.assets[0]);
+    try {
+      const image = result.assets[0];
+      await changePicture(image); // Kirim gambar yang dipilih
+      Toast.show({
+        type: "success",
+        text1: "Berhasil",
+        text2: "Berhasil mengganti foto profile",
+      });
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Gagal mengganti foto profile",
+      });
+    }
+  }
+};
+  
+  
   const handlePickCamera = async () => {
     if (Platform.OS !== "web") {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
+        alert("Sorry, we need camera permissions to make this work!");
         return;
       }
     }
+  
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       quality: 1,
     });
-
+  
     if (!result.canceled) {
       setIsPickImage(false);
       try {
-        const compressedImage = await compressImage(result.assets[0].uri);
-        await changePicture(compressedImage);
+        // Tanpa kompresi, langsung kirim gambar
+        await changePicture(result.assets[0]); 
         Toast.show({
           type: "success",
           text1: "Berhasil",
           text2: "Berhasil mengganti foto profile",
         });
       } catch (error) {
+        console.error("Failed to upload profile picture", JSON.stringify(error));
         Toast.show({
           type: "error",
           text1: "Gagal",
@@ -123,6 +142,7 @@ export default function ProfileScreen() {
       }
     }
   };
+  
 
   const handleDeleteImage = async () => {
     setIsPickImage(false);

@@ -11,6 +11,7 @@ import {
 import { User } from "@/models/User";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
+import { Platform } from "react-native";
 
 interface ProfileResponse extends Response {
   data: User;
@@ -97,23 +98,38 @@ export const changePhone = async (form: FormChangePhone): Promise<Response> => {
   }
 };
 
-export const changePicture = async (
-  image: ImagePicker.ImagePickerAsset
-): Promise<ProfileResponse> => {
+export const changePicture = async (image: ImagePicker.ImagePickerAsset): Promise<any> => {
   try {
     const formData = new FormData();
+    
+    // Pastikan URI sesuai dengan platform (Android/iOS)
+    const uri = Platform.OS === 'android' ? image.uri.replace('file://', '') : image.uri;
+
     formData.append("image", {
-      uri: image.uri,
-      type: "image/jpeg",
+      uri: uri,
+      type: image.type || 'image/jpeg', // Tentukan tipe gambar
       name: "profile.jpg",
-    } as any);
-    const { data } = await axiosInstance.put<ProfileResponse>(
-      "/account/picture",
-      formData
-    );
+    }as any);
+
+    const response = await fetch('https://api.lestarikehati.com/api/user/account/picture', {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${ACCESS_TOKEN}`,
+        'Accept': 'application/json',
+      },
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload image');
+    }
+
+    const data = await response.json();
     await AsyncStorage.setItem(PICTURE, data.data.picture || "");
+
     return data;
   } catch (error) {
+    console.error("Failed to upload image", error);
     throw error;
   }
 };
