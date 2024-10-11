@@ -57,8 +57,8 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
       <ScrollView className="px-4 space-y-8 bg-neutral-50 min-h-screen">
-        <View className="flex flex-row justify-between items-center">
-          <View className="flex flex-col gap-2">
+        <View className="flex flex-row justify-between items-center py-4">
+          <View className="flex flex-col gap-2 w-[85%]">
             <Text
               className="text-base text-neutral-600 font-semibold"
               style={Inter}
@@ -67,9 +67,10 @@ export default function HomeScreen() {
             </Text>
             <Text
               className="text-2xl text-neutral-950 font-semibold"
-              style={Inter}
+              style={Inter} 
+              numberOfLines={1}
             >
-              {prof.name}
+              {prof.name.split(" ").slice(0, 2).join(" ")}
             </Text>
           </View>
           <Pressable
@@ -77,6 +78,7 @@ export default function HomeScreen() {
               fetchProfile();
               router.push({ pathname: "/(home)/profile" });
             }}
+            className="w-[15%] aspect-square"
           >
             <Image
               source={

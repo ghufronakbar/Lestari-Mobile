@@ -30,8 +30,8 @@ export default function MapModal({
   setForm,
 }: MapModalProps) {
   const [mapRegion, setMapRegion] = useState<Region>({
-    latitude: form.latitude ? parseFloat(form.latitude) : -6.2,
-    longitude: form.longitude ? parseFloat(form.longitude) : 106.816666,
+    latitude: form.latitude ? parseFloat(form.latitude) : -7.782741082121513,
+    longitude: form.longitude ? parseFloat(form.longitude) : 110.3670542376976,
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
   });
