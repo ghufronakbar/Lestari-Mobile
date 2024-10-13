@@ -226,6 +226,7 @@ export default function ProfileScreen() {
             </Pressable>
           ))}
         </View>
+        <View className="h-40" />
       </ScrollView>
     </SafeAreaView>
   );
