@@ -31,12 +31,7 @@ export default function LoginScreen() {
         await refresh();
         await getOverview();
         router.push("/(home)");
-      } catch (error) {
-        Toast.show({
-          type: "error",
-          text1: "Sesi Kadaluarsa",
-          text2: "Silahkan login kembali",
-        });
+      } catch (error) {        
         setLoading(false);
       }
     };

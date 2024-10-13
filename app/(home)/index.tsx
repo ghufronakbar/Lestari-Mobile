@@ -10,8 +10,8 @@ import {
 } from "react-native";
 import { Inter } from "@/constants/Fonts";
 import { Card } from "@/components/ui/Card";
-import { Link, router, useNavigation } from "expo-router";
-import { useEffect, useState } from "react";
+import { Link, router, useFocusEffect, useNavigation } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { initSavedProfile, SavedProfile } from "@/models/SavedProfile";
 import { getSavedProfile } from "@/services/account";
 import greet from "@/helpers/greet";
@@ -35,9 +35,13 @@ export default function HomeScreen() {
     setData(response.data);
     setLoading(false);
   };
-  useEffect(() => {
-    fetchData();
-  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+      return () => {};
+    }, [])
+  );
 
   const fetchProfile = async () => {
     const result = await getSavedProfile();
@@ -67,7 +71,7 @@ export default function HomeScreen() {
             </Text>
             <Text
               className="text-2xl text-neutral-950 font-semibold"
-              style={Inter} 
+              style={Inter}
               numberOfLines={1}
             >
               {prof.name.split(" ").slice(0, 2).join(" ")}
@@ -116,9 +120,14 @@ export default function HomeScreen() {
           </View>
           <ScrollView horizontal>
             {data.map((item) => (
-              <Card key={item.animalId} item={item} isPadding  />
+              <Card key={item.animalId} item={item} isPadding />
             ))}
           </ScrollView>
+          {!loading && !data.length && (
+            <View className="flex-1 items-center justify-center mt-16">
+              <Text className="text-black text-lg">Tidak ada riwayat</Text>
+            </View>
+          )}
           {loading && (
             <View className="flex-1 items-center justify-center mt-16">
               <ActivityIndicator size="large" color={C[1]} />

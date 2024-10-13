@@ -8,7 +8,7 @@ import {
   Platform,
 } from "react-native";
 import { Inter } from "@/constants/Fonts";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import { logout } from "@/services/auth";
 import { useEffect, useState } from "react";
@@ -65,12 +65,10 @@ export default function ProfileScreen() {
       quality: 1,
     });
 
-
     if (!result.canceled) {
       setIsPickImage(false);
       try {
         const compressedImage = await compressImage(result.assets[0].uri);
-
 
         await changePicture(compressedImage);
         Toast.show({
@@ -79,10 +77,6 @@ export default function ProfileScreen() {
           text2: "Berhasil mengganti foto profile",
         });
       } catch (error) {
-        console.log("error");
-        
-        console.log(JSON.stringify(error));
-        
         Toast.show({
           type: "error",
           text1: "Gagal",
@@ -263,6 +257,11 @@ const MENUS: MenuProfile[] = [
     name: "Permintaan Data Satwa",
     icon: <MaterialCommunityIcons name="database" size={18} color="#3b82f6" />,
     onPress: () => router.push("/request-data"),
+  },
+  {
+    name: "Laporkan Masalah Aplikasi",
+    icon: <MaterialIcons name="report-problem" size={18} color="#3b82f6" />,
+    onPress: () => router.push("/feature/error-report"),
   },
   {
     name: "Keluar",

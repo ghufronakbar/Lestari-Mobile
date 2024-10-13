@@ -32,11 +32,11 @@
         "INTERNET"
       ],
       "googleMaps": {
-        "apiKey": "AIzaSyC9gkfPHw8ENurnT4Yi2na5VQ3S7dzqnJc"
+        "apiKey": "AIzaSyADMtqm3wSxVeuEIpNRjKIuKO4taqYaB30"
       },
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyC9gkfPHw8ENurnT4Yi2na5VQ3S7dzqnJc"
+          "apiKey": "AIzaSyADMtqm3wSxVeuEIpNRjKIuKO4taqYaB30"
         }
       },
       "package": "com.lanstheprodigy.Lestari"
