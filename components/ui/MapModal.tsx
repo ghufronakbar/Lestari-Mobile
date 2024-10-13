@@ -48,7 +48,6 @@ export default function MapModal({
         text1: "Izin Diperlukan",
         text2: "Aplikasi memerlukan izin akses lokasi untuk membuka peta",
       });
-      setIsMapOpen(false);
       return false;
     }
     return true;
@@ -57,57 +56,60 @@ export default function MapModal({
   // Function to handle map open with permission check
   const handleOpenMap = async () => {
     const hasPermission = await checkLocationPermissions();
-    if (hasPermission) {
-      setIsMapOpen(true);
+    if (!hasPermission) {
+      return; // Jangan buka modal jika izin tidak diberikan
     }
+    setIsMapOpen(true); // Buka modal jika izin diberikan
   };
 
+  // Effect untuk membuka modal jika di-trigger dari luar
   useEffect(() => {
-    handleOpenMap();
-  }, []);
+    if (isMapOpen) {
+      handleOpenMap();
+    }
+  }, [isMapOpen]);
 
   // Function to handle selecting location
   const handleSelectLocation = async () => {
     if (mapRef.current) {
-      mapRef.current.getCamera().then(async (camera) => {
-        try {
-          const { center } = camera;
-          const reversed = await Location.reverseGeocodeAsync({
-            latitude: center.latitude,
-            longitude: center.longitude,
-          });
-          setForm({
-            ...form,
-            latitude: center.latitude.toString(),
-            longitude: center.longitude.toString(),
-            city: reversed[0].city || "",
-          });
-          Toast.show({
-            type: "success",
-            text1: "Sukses",
-            text2: "Berhasil Mengambil Lokasi",
-          });
-        } catch (error) {
-          Toast.show({
-            type: "error",
-            text1: "Gagal",
-            text2: "Terjadi Kesalahan Saat Mengambil Lokasi",
-          });
-        } finally {
-          setIsMapOpen(false);
-        }
-      });
-    }
-  };
+      try {
+        const camera = await mapRef.current.getCamera();
+        console.log("Camera center: ", camera.center);
 
-  // Handle map error
-  const handleMapError = (error: any) => {
-    console.error("Map error:", error);
-    Toast.show({
-      type: "error",
-      text1: "Error",
-      text2: "Terjadi kesalahan saat memuat peta",
-    });
+        if (!camera.center) {
+          throw new Error("Gagal mendapatkan pusat kamera.");
+        }
+
+        const reversed = await Location.reverseGeocodeAsync({
+          latitude: camera.center.latitude,
+          longitude: camera.center.longitude,
+        });
+
+        console.log("Reversed geocode result: ", reversed);
+
+        setForm({
+          ...form,
+          latitude: camera.center.latitude.toString(),
+          longitude: camera.center.longitude.toString(),
+          city: reversed[0]?.city || "",
+        });
+
+        Toast.show({
+          type: "success",
+          text1: "Sukses",
+          text2: "Berhasil Mengambil Lokasi",
+        });
+      } catch (error: any) {
+        console.error("Error selecting location: ", error);
+        Toast.show({
+          type: "error",
+          text1: "Gagal",
+          text2: error.message || "Terjadi Kesalahan Saat Mengambil Lokasi",
+        });
+      } finally {
+        setIsMapOpen(false); // Tutup modal setelah lokasi dipilih
+      }
+    }
   };
 
   return (
