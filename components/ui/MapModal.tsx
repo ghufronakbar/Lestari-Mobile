@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import { AntDesign, Entypo } from "@expo/vector-icons";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { FormAnimal } from "@/services/animal";
 import * as Location from "expo-location";
 import MapView, { Region } from "react-native-maps";
@@ -23,6 +23,7 @@ interface MapModalProps {
   form: FormAnimal;
   setForm: (value: FormAnimal) => void;
 }
+
 export default function MapModal({
   isMapOpen,
   setIsMapOpen,
@@ -38,6 +39,30 @@ export default function MapModal({
 
   const mapRef = useRef<MapView>(null);
 
+  // Function to check location permissions
+  const checkLocationPermissions = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      Toast.show({
+        type: 'error',
+        text1: 'Izin Diperlukan',
+        text2: 'Aplikasi memerlukan izin akses lokasi untuk membuka peta',
+      });
+      setIsMapOpen(false);
+      return false;
+    }
+    return true;
+  };
+
+  // Function to handle map open with permission check
+  const handleOpenMap = async () => {
+    const hasPermission = await checkLocationPermissions();
+    if (hasPermission) {
+      setIsMapOpen(true);
+    }
+  };
+
+  // Function to handle selecting location
   const handleSelectLocation = async () => {
     if (mapRef.current) {
       mapRef.current.getCamera().then(async (camera) => {
@@ -71,6 +96,16 @@ export default function MapModal({
     }
   };
 
+  // Handle map error
+  const handleMapError = (error: any) => {
+    console.error("Map error:", error);
+    Toast.show({
+      type: 'error',
+      text1: 'Error',
+      text2: 'Terjadi kesalahan saat memuat peta',
+    });
+  };
+
   return (
     <Modal
       visible={isMapOpen}
@@ -91,6 +126,7 @@ export default function MapModal({
           ref={mapRef}
           style={StyleSheet.absoluteFillObject}
           initialRegion={mapRegion}
+          onMapReady={() => console.log('Map is ready')}          
           onRegionChangeComplete={(region) => setMapRegion(region)}
         />
 
