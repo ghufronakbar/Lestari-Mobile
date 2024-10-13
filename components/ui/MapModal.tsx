@@ -42,11 +42,11 @@ export default function MapModal({
   // Function to check location permissions
   const checkLocationPermissions = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
+    if (status !== "granted") {
       Toast.show({
-        type: 'error',
-        text1: 'Izin Diperlukan',
-        text2: 'Aplikasi memerlukan izin akses lokasi untuk membuka peta',
+        type: "error",
+        text1: "Izin Diperlukan",
+        text2: "Aplikasi memerlukan izin akses lokasi untuk membuka peta",
       });
       setIsMapOpen(false);
       return false;
@@ -61,6 +61,10 @@ export default function MapModal({
       setIsMapOpen(true);
     }
   };
+
+  useEffect(() => {
+    handleOpenMap();
+  }, []);
 
   // Function to handle selecting location
   const handleSelectLocation = async () => {
@@ -100,9 +104,9 @@ export default function MapModal({
   const handleMapError = (error: any) => {
     console.error("Map error:", error);
     Toast.show({
-      type: 'error',
-      text1: 'Error',
-      text2: 'Terjadi kesalahan saat memuat peta',
+      type: "error",
+      text1: "Error",
+      text2: "Terjadi kesalahan saat memuat peta",
     });
   };
 
@@ -126,7 +130,7 @@ export default function MapModal({
           ref={mapRef}
           style={StyleSheet.absoluteFillObject}
           initialRegion={mapRegion}
-          onMapReady={() => console.log('Map is ready')}          
+          onMapReady={() => console.log("Map is ready")}
           onRegionChangeComplete={(region) => setMapRegion(region)}
         />
 
