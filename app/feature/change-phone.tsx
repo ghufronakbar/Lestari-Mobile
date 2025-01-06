@@ -1,14 +1,13 @@
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   KeyboardAvoidingView,
   Pressable,
   ActivityIndicator,
   Platform,
 } from "react-native";
-import { Inter } from "@/constants/Fonts";
+import { OutfitRegular } from "@/constants/Fonts";
 import { CustomInputText } from "@/components/ui/CustomInputText";
 import { router, useNavigation } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,11 +19,9 @@ import {
 } from "@/services/account";
 import { useState } from "react";
 import { ResponseFail } from "@/models/Response";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function ChangePhoneScreen() {
-  useNavigation().setOptions({
-    headerShown: false,
-  });
+export default function ChangePhoneScreen() {  
   const [form, setForm] = useState<FormChangePhone>(initFormChangePhone);
   const [isPending, setIsPending] = useState<boolean>(false);
 
@@ -73,16 +70,8 @@ export default function ChangePhoneScreen() {
     }
   };
   return (
-    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
+    <SafeAreaView>
       <KeyboardAvoidingView className="px-4 flex flex-col h-screen">
-        <View className="flex flex-row items-center space-x-2">
-          <Pressable onPress={() => router.back()}>
-            <Ionicons name="chevron-back" size={24} color="black" />
-          </Pressable>
-          <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
-            Ganti Nomor Telepon
-          </Text>
-        </View>
         <ScrollView className="mt-8 space-y-4">
           <View className="flex flex-col">
             <CustomInputText
@@ -106,7 +95,10 @@ export default function ChangePhoneScreen() {
               {isPending ? (
                 <ActivityIndicator size={"small"} color={"white"} />
               ) : (
-                <Text className="text-sm text-white text-center" style={Inter}>
+                <Text
+                  className="text-sm text-white text-center"
+                  style={OutfitRegular}
+                >
                   Ubah
                 </Text>
               )}

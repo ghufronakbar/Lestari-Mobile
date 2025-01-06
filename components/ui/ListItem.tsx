@@ -1,5 +1,5 @@
 import { C } from "@/constants/Colors";
-import { Inter } from "@/constants/Fonts";
+import { OutfitMedium, OutfitRegular } from "@/constants/Fonts";
 import { RequestData } from "@/models/RequestData";
 import formatDate from "@/utils/formatDate";
 import { AntDesign } from "@expo/vector-icons";
@@ -25,46 +25,44 @@ export const ListItem = ({ item }: { item: RequestData }) => {
           <Text
             className="text-lg text-neutral-950 font-bold"
             numberOfLines={1}
-            style={Inter}
+            style={OutfitRegular}
           >
             {item.subject}
           </Text>
           <Text
             className="text-sm text-neutral-600 font-medium"
             numberOfLines={2}
-            style={Inter}
+            style={OutfitRegular}
           >
             {item.body}
           </Text>
           <Text
             className="text-xs text-neutral-600 font-medium mt-2"
             numberOfLines={1}
-            style={Inter}
+            style={OutfitRegular}
           >
             {formatDate(item.createdAt)}
           </Text>
         </View>
         <View className="flex flex-col items-center justify-center w-[20%] space-y-1">
-          <AntDesign
-            name={
-              item.isPending
-                ? "clockcircle"
+          <View
+            style={{
+              backgroundColor: item.isPending
+                ? C.info
                 : item.isApproved
-                ? "checkcircle"
-                : "closecircle"
-            }
-            size={24}
-            color={
-              item.isPending ? C.info : item.isApproved ? C.success : C.error
-            }
-          />
-          <Text className="text-xs text-neutral-600 font-medium" style={Inter}>
-            {item.isPending
-              ? "Tertunda"
-              : item.isApproved
-              ? "Disetujui"
-              : "Ditolak"}
-          </Text>
+                ? C.success
+                : C.error,
+            }}
+            className="px-2 py-1 rounded-full"
+          >
+            <Text className="text-xs text-white" style={OutfitMedium}>
+              {item.isPending
+                ? "Tertunda"
+                : item.isApproved
+                ? "Disetujui"
+                : "Ditolak"}
+            </Text>
+          </View>
         </View>
       </View>
     </Pressable>

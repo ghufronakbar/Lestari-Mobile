@@ -42,14 +42,14 @@ const ModalActionImage: React.FC<ModalActionImageProps> = ({
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.message}>{message}</Text>
         <View style={styles.buttonContainer}>
-          {onDelete &&
-          <TouchableOpacity
-            style={[styles.button, styles.deleteButton]}
-            onPress={onDelete}
-          >
-            <Text style={styles.buttonText}>Hapus</Text>
-          </TouchableOpacity>
-          }
+          {onDelete && (
+            <TouchableOpacity
+              style={[styles.button, styles.deleteButton]}
+              onPress={onDelete}
+            >
+              <Text style={styles.buttonText}>Hapus</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             style={[styles.button, styles.cameraButton]}
             onPress={onCamera}
@@ -83,18 +83,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
     marginBottom: 20,
+    fontFamily: "Outfit-Bold",
   },
   message: {
     fontSize: 16,
     color: "gray",
     marginBottom: 20,
     textAlign: "center",
+    fontFamily: "Outfit-Regular",
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "space-evenly",    
+    justifyContent: "space-evenly",
     width: "100%",
   },
   button: {
@@ -118,6 +119,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
+    fontFamily: "Outfit-Medium",
   },
 });
 

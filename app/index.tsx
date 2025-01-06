@@ -6,7 +6,7 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import { Inter } from "@/constants/Fonts";
+import { OutfitBold, OutfitRegular } from "@/constants/Fonts";
 import { CustomInputText } from "@/components/ui/CustomInputText";
 import { router, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
@@ -83,7 +83,7 @@ export default function LoginScreen() {
       >
         <View className="flex-1 justify-center items-center">
           <View className="w-full rounded-lg">
-            <Text className="text-4xl text-black font-bold" style={Inter}>
+            <Text className="text-4xl text-black" style={OutfitBold}>
               Selamat Datang di <Text className="text-custom-1">Lestari</Text>
             </Text>
             <View className="mt-8 space-y-4">
@@ -111,7 +111,7 @@ export default function LoginScreen() {
                   ) : (
                     <Text
                       className="text-sm text-white text-center"
-                      style={Inter}
+                      style={OutfitRegular}
                       onPress={handleLogin}
                     >
                       Login
@@ -120,7 +120,7 @@ export default function LoginScreen() {
                 </Pressable>
                 <View className="flex flex-row justify-between items-center my-6">
                   <View className="h-px w-[30%] bg-neutral-200" />
-                  <Text className="text-black" style={Inter}>
+                  <Text className="text-black" style={OutfitRegular}>
                     Belum Memiliki Akun
                   </Text>
                   <View className="h-px w-[30%] bg-neutral-200" />
@@ -132,7 +132,7 @@ export default function LoginScreen() {
               >
                 <Text
                   className="text-sm text-custom-1 text-center"
-                  style={Inter}
+                  style={OutfitRegular}
                 >
                   Buat Akun
                 </Text>
@@ -140,7 +140,7 @@ export default function LoginScreen() {
               <Pressable>
                 <Text
                   className="text-black self-center flex flex-row items-center"
-                  style={Inter}
+                  style={OutfitRegular}
                   onPress={() => router.push({ pathname: "/forgot-password" })}
                 >
                   Lupa Kata Sandi?

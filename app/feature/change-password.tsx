@@ -1,16 +1,13 @@
 import {
-  Image,
   View,
   Text,
-  SafeAreaView,
   ScrollView,
-  TextInput,
   KeyboardAvoidingView,
   Pressable,
   ActivityIndicator,
   Platform,
 } from "react-native";
-import { Inter } from "@/constants/Fonts";
+import { OutfitRegular } from "@/constants/Fonts";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { CustomInputText } from "@/components/ui/CustomInputText";
 import { router, useNavigation } from "expo-router";
@@ -22,11 +19,9 @@ import {
 import { useState } from "react";
 import Toast from "react-native-toast-message";
 import { ResponseFail } from "@/models/Response";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ChangePasswordScreen() {
-  useNavigation().setOptions({
-    headerShown: false,
-  });
   const [form, setForm] = useState<FormChangePassword>(initFormChangePassword);
   const [isPending, setIsPending] = useState(false);
 
@@ -71,7 +66,7 @@ export default function ChangePasswordScreen() {
         type: "success",
         text1: "Sukses",
         text2: "Berhasil Mengganti Password",
-      });      
+      });
     } catch (error) {
       const err = error as ResponseFail;
       Toast.show({
@@ -87,16 +82,8 @@ export default function ChangePasswordScreen() {
     }
   };
   return (
-    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
-      <KeyboardAvoidingView className=" flex flex-col h-screen">
-        <View className="flex px-4  flex-row items-center space-x-2">
-          <Pressable onPress={() => router.back()}>
-            <Ionicons name="chevron-back" size={24} color="black" />
-          </Pressable>
-          <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
-            Ganti Kata Sandi
-          </Text>
-        </View>
+    <SafeAreaView>
+      <KeyboardAvoidingView className=" flex flex-col h-screen">        
         <ScrollView className="mt-8 px-4  space-y-4">
           <View className="flex flex-col">
             <CustomInputText
@@ -139,7 +126,10 @@ export default function ChangePasswordScreen() {
               {isPending ? (
                 <ActivityIndicator size={"small"} color={"white"} />
               ) : (
-                <Text className="text-sm text-white text-center" style={Inter}>
+                <Text
+                  className="text-sm text-white text-center"
+                  style={OutfitRegular}
+                >
                   Ubah
                 </Text>
               )}

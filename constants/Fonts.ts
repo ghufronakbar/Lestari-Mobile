@@ -1,1 +1,9 @@
-export const Inter = {fontFamily: "Inter"}
+export const OutfitRegular = { fontFamily: "Outfit-Regular" };
+export const OutfitBold = { fontFamily: "Outfit-Bold" };
+export const OutfitSemiBold = { fontFamily: "Outfit-SemiBold" };
+export const OutfitMedium = { fontFamily: "Outfit-Medium" };
+export const OutfitLight = { fontFamily: "Outfit-Light" };
+export const OutfitExtraLight = { fontFamily: "Outfit-ExtraLight" };
+export const OutfitExtraBold = { fontFamily: "Outfit-ExtraBold" };
+export const OutfitBlack = { fontFamily: "Outfit-Black" };
+export const OutfitThin = { fontFamily: "Outfit-Thin" };

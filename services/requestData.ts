@@ -7,9 +7,13 @@ interface RequestDataResponse {
   data: RequestData[];
 }
 
-export const getAllReqData = async (): Promise<RequestDataResponse> => {
+export const getAllReqData = async (
+  key?: Date
+): Promise<RequestDataResponse> => {
   try {
-    const { data } = await axiosInstance.get("/request-data");
+    const { data } = await axiosInstance.get("/request-data", {
+      params: { key },
+    });
     return data;
   } catch (error) {
     throw error;
@@ -54,12 +58,11 @@ export const createReqDataUser = async (
       type: "image/jpeg",
       name: "requestDataAttachment.jpg",
     } as any);
-    const { data } = await axiosInstance.post("/request-data", formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+    const { data } = await axiosInstance.post("/request-data", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return data;
   } catch (error) {
     throw error;

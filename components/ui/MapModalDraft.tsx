@@ -15,17 +15,18 @@ import * as Location from "expo-location";
 import MapView, { Region } from "react-native-maps";
 import Toast from "react-native-toast-message";
 import { OutfitBold, OutfitMedium } from "@/constants/Fonts";
+import { AnimalDraft } from "@/services/draft";
 
 const { width, height } = Dimensions.get("window");
 
 interface MapModalProps {
   isMapOpen: boolean;
   setIsMapOpen: (value: boolean) => void;
-  form: FormAnimal;
-  setForm: (value: FormAnimal) => void;
+  form: AnimalDraft;
+  setForm: (value: AnimalDraft) => void;
 }
 
-export default function MapModal({
+export default function MapModalDraft({
   isMapOpen,
   setIsMapOpen,
   form,

@@ -1,4 +1,4 @@
-import { Inter } from "@/constants/Fonts";
+import { OutfitMedium, OutfitRegular } from "@/constants/Fonts";
 import { Text, TextInput, View } from "react-native";
 
 export interface CustomInputTextProps {
@@ -37,7 +37,7 @@ export const CustomInputText: React.FC<CustomInputTextProps> = ({
 }) => {
   return (
     <View className="flex flex-col space-y-2 mb-4">
-      <Text className="text-black text-lg font-medium" style={Inter}>
+      <Text className="text-black text-lg" style={OutfitMedium}>
         {label}
       </Text>
       <TextInput
@@ -45,7 +45,7 @@ export const CustomInputText: React.FC<CustomInputTextProps> = ({
           multiline ? "h-40" : "h-12"
         } `}
         placeholder={placeholder}
-        style={Inter}
+        style={OutfitRegular}
         value={value}
         onChangeText={onChangeText}
         keyboardType={keyboardType}

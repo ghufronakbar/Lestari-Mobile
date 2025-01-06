@@ -1,3 +1,4 @@
+import { OutfitBold } from "@/constants/Fonts";
 import { AntDesign } from "@expo/vector-icons";
 import {
   Image,
@@ -33,7 +34,9 @@ const ModalShowImage = ({
           <Pressable onPress={onClose}>
             <AntDesign name="close" size={24} color="black" />
           </Pressable>
-          <Text className="font-bold text-lg">{title}</Text>
+          <Text className="text-lg" style={OutfitBold}>
+            {title}
+          </Text>
           <AntDesign name="close" size={24} color="transparent" />
         </View>
         <View className="flex-1 justify-center items-center">

@@ -7,9 +7,11 @@ import { TOTAL_ANIMAL, TOTAL_WEEKLY } from "@/constants/asyncStorage";
 interface ResposneOverview extends Response {
   data: Overview;
 }
-export const getOverview = async (): Promise<ResposneOverview> => {
+export const getOverview = async (key?: Date): Promise<ResposneOverview> => {
   try {
-    const { data } = await axiosInstance.get<ResposneOverview>("/overview");
+    const { data } = await axiosInstance.get<ResposneOverview>("/overview", {
+      params: { key },
+    });
     await AsyncStorage.setItem(TOTAL_ANIMAL, data.data.totalAnimal.toString());
     await AsyncStorage.setItem(TOTAL_WEEKLY, data.data.totalWeekly.toString());
     return data;

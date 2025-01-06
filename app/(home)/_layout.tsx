@@ -8,6 +8,22 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: C[1],
+        tabBarStyle: {
+          backgroundColor: "white",
+          position: "absolute",
+          bottom: 30,
+          marginHorizontal: 20,
+          borderRadius: 20,
+          paddingBottom: 0,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 3 },
+          shadowOpacity: 0.1,
+          shadowRadius: 5,
+          elevation: 2,
+          height: 55,          
+          borderTopWidth: 0,
+        },
+        tabBarShowLabel: false,
         headerShown: false,
       }}
     >
@@ -17,7 +33,7 @@ export default function TabLayout() {
           title: "Beranda",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "grid" : "grid-outline"}
+              name={focused ? "home" : "home-outline"}
               color={focused ? C[1] : "gray"}
             />
           ),
@@ -27,9 +43,11 @@ export default function TabLayout() {
         name="history"
         options={{
           title: "Riwayat",
+          headerTitle: "Riwayat",
+          headerShown: true,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "timer" : "timer-outline"}
+              name={focused ? "time" : "time-outline"}
               color={focused ? C[1] : "gray"}
             />
           ),
@@ -41,7 +59,21 @@ export default function TabLayout() {
           title: "Input Satwa",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "pencil" : "pencil-outline"}
+              name={focused ? "add-circle" : "add-circle-outline"}
+              color={focused ? C[1] : "gray"}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="draft"
+        options={{
+          title: "Draft",
+          headerTitle: "Draft",
+          headerShown: true,
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "document" : "document-outline"}
               color={focused ? C[1] : "gray"}
             />
           ),

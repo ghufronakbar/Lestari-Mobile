@@ -5,7 +5,6 @@ import {
   ScrollView,
   TextInput,
   KeyboardAvoidingView,
-  Pressable,
   Platform,
   ActivityIndicator,
   TouchableOpacity,
@@ -37,9 +36,16 @@ import { getSuggestions } from "@/services/suggestion";
 import useDebounce from "@/utils/useDebounce";
 import { Suggestion } from "@/models/Suggestion";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  AnimalDraft,
+  editDraft,
+  getDraftByKey,
+  initAnimalDraft,
+} from "@/services/draft";
+import MapModalDraft from "@/components/ui/MapModalDraft";
 
-export default function EditAnimalScreen() {
-  const [form, setForm] = useState<FormAnimal>(initFormAnimal);
+export default function EditDraftScreen() {
+  const [form, setForm] = useState<AnimalDraft>(initAnimalDraft);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedImage, setSelectedImage] = useState<ImageResult | null>(null);
   const [image, setImage] = useState<string>("");
@@ -59,21 +65,23 @@ export default function EditAnimalScreen() {
 
   useDebounce(
     () => {
-      if (form.localName.length <= 2 && form.latinName.length <= 2) {
-        setIsSuggestionOpen(false);
-        return;
-      }
-      if (form.localName.length >= 2) {
-        fetchSuggestions(form.localName);
-        setIsSuggestionOpen(true);
-      }
-      if (form.latinName.length >= 2) {
-        fetchSuggestions(form.latinName);
-        setIsSuggestionOpen(true);
+      if (form) {
+        if (form?.localName?.length <= 2 && form?.latinName?.length <= 2) {
+          setIsSuggestionOpen(false);
+          return;
+        }
+        if (form?.localName?.length >= 2) {
+          fetchSuggestions(form.localName);
+          setIsSuggestionOpen(true);
+        }
+        if (form.latinName.length >= 2) {
+          fetchSuggestions(form.latinName);
+          setIsSuggestionOpen(true);
+        }
       }
     },
     500,
-    [form.localName, form.latinName]
+    [form?.localName, form?.latinName]
   );
 
   const handlePickGallery = async () => {
@@ -136,9 +144,13 @@ export default function EditAnimalScreen() {
 
   const fetchData = async () => {
     try {
-      const response = await getAnimalById(Number(id));
+      const response = await getDraftByKey(id);
+      if (!response) {
+        router.back();
+        return;
+      }
       setForm(response);
-      setImage(response.image);
+      setImage(response?.image?.uri || "");
       setLoading(false);
     } catch (error) {
       router.back();
@@ -154,15 +166,16 @@ export default function EditAnimalScreen() {
   }
 
   const handleAnimal = async () => {
+    if (!form) return;
     if (
-      form.latinName === "" ||
-      form.localName === "" ||
-      form.habitat === "" ||
-      form.description === "" ||
-      form.amount === 0 ||
-      form.city === "" ||
-      form.latitude === "" ||
-      form.longitude === ""
+      form?.latinName === "" ||
+      form?.localName === "" ||
+      form?.habitat === "" ||
+      form?.description === "" ||
+      form?.amount === 0 ||
+      form?.city === "" ||
+      form?.latitude === "" ||
+      form?.longitude === ""
     ) {
       Toast.show({
         type: "error",
@@ -173,11 +186,11 @@ export default function EditAnimalScreen() {
     }
     setLoading(true);
     try {
-      await editAnimal(Number(id), form);
+      await editDraft(form, selectedImage);
       Toast.show({
         type: "success",
         text1: "Sukses",
-        text2: "Berhasil Mengedit Satwa",
+        text2: "Berhasil Mengedit Draft Satwa",
       });
       if (selectedImage) {
         await editAnimalImage(Number(id), selectedImage);
@@ -196,6 +209,7 @@ export default function EditAnimalScreen() {
   };
 
   const getLocation = async () => {
+    if (!form) return;
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       return;
@@ -280,7 +294,7 @@ export default function EditAnimalScreen() {
               className="w-full h-full object-cover"
             />
           </View>
-          <Pressable
+          <TouchableOpacity
             className="w-[40%] bg-custom-1 px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2 self-end"
             onPress={() => setIsPickImage(true)}
           >
@@ -290,7 +304,7 @@ export default function EditAnimalScreen() {
             >
               {selectedImage ? "Ubah" : "Unggah"} Gambar
             </Text>
-          </Pressable>
+          </TouchableOpacity>
           <View className="flex flex-col">
             <CustomInputText
               label="Nama Lokal"
@@ -402,7 +416,7 @@ export default function EditAnimalScreen() {
                 <View className="h-px w-[30%] bg-neutral-200" />
               </View>
               <View className="w-full flex flex-row justify-between mb-4">
-                <Pressable
+                <TouchableOpacity
                   className="bg-custom-success w-[48%] px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2"
                   onPress={isPending ? toastPending : getLocation}
                 >
@@ -419,8 +433,8 @@ export default function EditAnimalScreen() {
                       </Text>
                     </View>
                   )}
-                </Pressable>
-                <Pressable
+                </TouchableOpacity>
+                <TouchableOpacity
                   className="bg-custom-info w-[48%] px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-1"
                   onPress={isPending ? toastPending : () => setIsMapOpen(true)}
                 >
@@ -431,7 +445,7 @@ export default function EditAnimalScreen() {
                   >
                     Buka Map
                   </Text>
-                </Pressable>
+                </TouchableOpacity>
               </View>
               <CustomInputText
                 label="Deskripsi"
@@ -443,7 +457,7 @@ export default function EditAnimalScreen() {
                 numberOfLines={10}
                 multiline
               />
-              <Pressable
+              <TouchableOpacity
                 className="bg-custom-1 px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2"
                 onPress={handleAnimal}
               >
@@ -453,34 +467,16 @@ export default function EditAnimalScreen() {
                 >
                   Simpan
                 </Text>
-              </Pressable>
-              <Pressable
-                className="bg-red-500 px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2"
-                onPress={() => setIsConfirmDelete(true)}
-              >
-                <Text
-                  className="text-sm text-white text-center"
-                  style={OutfitRegular}
-                >
-                  Hapus
-                </Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
           <View className="h-96" />
         </ScrollView>
-        <MapModal
+        <MapModalDraft
           isMapOpen={isMapOpen}
           setIsMapOpen={setIsMapOpen}
           form={form}
           setForm={setForm}
-        />
-        <ModalConfirmation
-          title="Hapus Satwa"
-          message="Apakah anda yakin ingin menghapus satwa ini?"
-          isVisible={isConfirmDelete}
-          onClose={() => setIsConfirmDelete(false)}
-          onConfirm={handleDelete}
         />
       </KeyboardAvoidingView>
     </SafeAreaView>

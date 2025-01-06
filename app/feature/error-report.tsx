@@ -2,7 +2,6 @@ import {
   Image,
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   TextInput,
   KeyboardAvoidingView,
@@ -10,7 +9,7 @@ import {
   ActivityIndicator,
   Platform,
 } from "react-native";
-import { Inter } from "@/constants/Fonts";
+import { OutfitRegular } from "@/constants/Fonts";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { CustomInputText } from "@/components/ui/CustomInputText";
 import { router, useNavigation } from "expo-router";
@@ -19,11 +18,9 @@ import { useState } from "react";
 import Toast from "react-native-toast-message";
 import { ResponseFail } from "@/models/Response";
 import { ErrorReportForm } from "@/models/ErrorReport";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ErrorReportScreen() {
-  useNavigation().setOptions({
-    headerShown: false,
-  });
   const [form, setForm] = useState<ErrorReportForm>(initErrorReport);
   const [isPending, setIsPending] = useState(false);
 
@@ -61,17 +58,9 @@ export default function ErrorReportScreen() {
     }
   };
   return (
-    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
+    <SafeAreaView>
       <KeyboardAvoidingView className=" flex flex-col h-screen">
-        <View className="flex px-4  flex-row items-center space-x-2">
-          <Pressable onPress={() => router.back()}>
-            <Ionicons name="chevron-back" size={24} color="black" />
-          </Pressable>
-          <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
-            Kirim Laporan
-          </Text>
-        </View>
-        <ScrollView className="mt-8 px-4  space-y-4">
+        <ScrollView className="px-4  space-y-4">
           <View className="flex flex-col">
             <CustomInputText
               label="Masalah Aplikasi"
@@ -103,7 +92,10 @@ export default function ErrorReportScreen() {
               {isPending ? (
                 <ActivityIndicator size={"small"} color={"white"} />
               ) : (
-                <Text className="text-sm text-white text-center" style={Inter}>
+                <Text
+                  className="text-sm text-white text-center"
+                  style={OutfitRegular}
+                >
                   Kirim
                 </Text>
               )}

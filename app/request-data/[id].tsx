@@ -1,19 +1,13 @@
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
-  TextInput,
   Pressable,
   Linking,
   Image,
-  Modal,
-  StyleSheet,
-  Dimensions,
-  ImageSourcePropType,
   Platform,
 } from "react-native";
-import { Inter } from "@/constants/Fonts";
+import { OutfitBold, OutfitMedium, OutfitRegular } from "@/constants/Fonts";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { ListContainer, ListItem } from "@/components/ui/ListItem";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
@@ -24,12 +18,9 @@ import formatDate from "@/utils/formatDate";
 import { getReqDataById } from "@/services/requestData";
 import Toast from "react-native-toast-message";
 import ModalShowImage from "@/components/ui/ModalShowImage";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function DetailRequestDataScreen() {
-  useNavigation().setOptions({
-    headerShown: false,
-  });
-
   const [isShowImage, setIsShowImage] = useState<boolean>(false);
   const [data, setData] = useState<RequestData>(initRequestData);
   const { id } = useLocalSearchParams() as { id: string };
@@ -60,23 +51,18 @@ export default function DetailRequestDataScreen() {
   };
 
   return (
-    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
+    <SafeAreaView>
       <View className="px-4 flex flex-col h-screen space-y-4">
-        <View className="flex flex-row items-center space-x-2">
-          <Pressable onPress={() => router.back()}>
-            <Ionicons name="chevron-back" size={24} color="black" />
-          </Pressable>
-          <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
-            Detail Permintaan
-          </Text>
-        </View>
         <ScrollView className="space-y-4">
-          <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
+          <Text
+            className="text-4xl text-neutral-950"
+            style={OutfitBold}
+          >
             {data.subject}
           </Text>
           <View>
             <View
-              className={`flex flex-row items-center justify-center w-[26%] py-1 px-2 space-x-1 rounded-xl ${
+              className={`flex flex-row items-center justify-center w-[26%] py-2 px-2 space-x-1 rounded-xl ${
                 data.isPending
                   ? "bg-custom-info"
                   : data.isApproved
@@ -92,10 +78,13 @@ export default function DetailRequestDataScreen() {
                     ? "check"
                     : "close"
                 }
-                size={16}
+                size={12}
                 color="white"
               />
-              <Text className="text-xs text-white font-medium" style={Inter}>
+              <Text
+                className="text-xs text-white"
+                style={OutfitMedium}
+              >
                 {data.isPending
                   ? "Tertunda"
                   : data.isApproved
@@ -105,19 +94,19 @@ export default function DetailRequestDataScreen() {
             </View>
           </View>
           <View>
-            <Text className="font-medium" style={Inter}>
+            <Text className="font-medium" style={OutfitRegular}>
               Diajukan Pada:{" "}
               {data.requestDataId === 0 ? "-" : `${formatDate(data.createdAt)}`}
             </Text>
-            <Text className="font-medium" style={Inter}>
+            <Text className="font-medium" style={OutfitRegular}>
               Dijawab Pada:{" "}
               {data.requestDataId === 0 ? "-" : `${formatDate(data.createdAt)}`}
             </Text>
           </View>
-          <Text className="text-neutral-600 text-base" style={Inter}>
+          <Text className="text-neutral-600 text-base" style={OutfitRegular}>
             {data.body}
           </Text>
-          <Text className="font-medium" style={Inter}>
+          <Text className="font-medium" style={OutfitRegular}>
             Lampiran:
           </Text>
           <Pressable onPress={() => setIsShowImage(true)}>
@@ -132,7 +121,7 @@ export default function DetailRequestDataScreen() {
           </Pressable>
           <Text
             className="font-medium text-neutral-600 text-xs -mt-4"
-            style={Inter}
+            style={OutfitRegular}
           >
             *Klik untuk melihat
           </Text>
@@ -141,7 +130,10 @@ export default function DetailRequestDataScreen() {
               className="bg-custom-1 px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2"
               onPress={handleDownload}
             >
-              <Text className="text-sm text-white text-center" style={Inter}>
+              <Text
+                className="text-sm text-white text-center"
+                style={OutfitRegular}
+              >
                 Unduh
               </Text>
             </Pressable>

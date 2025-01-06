@@ -2,17 +2,15 @@ import {
   Image,
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   TextInput,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ActivityIndicator,
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import { Inter } from "@/constants/Fonts";
+import { OutfitBold, OutfitRegular } from "@/constants/Fonts";
 import { Feather } from "@expo/vector-icons";
 import { CustomInputText } from "@/components/ui/CustomInputText";
 import { useNavigation } from "expo-router";
@@ -30,6 +28,8 @@ import SpinnerLoading from "@/components/ui/SpinnerLoading";
 import { Suggestion } from "@/models/Suggestion";
 import { getSuggestions } from "@/services/suggestion";
 import useDebounce from "@/utils/useDebounce";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { saveToDraft } from "@/services/draft";
 
 export default function AddAnimalScreen() {
   useNavigation().setOptions({
@@ -41,7 +41,7 @@ export default function AddAnimalScreen() {
   const [isPickImage, setIsPickImage] = useState<boolean>(false);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isMapOpen, setIsMapOpen] = useState<boolean>(false);
-  
+
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [isSuggestionOpen, setIsSuggestionOpen] = useState<boolean>(false);
 
@@ -68,7 +68,6 @@ export default function AddAnimalScreen() {
     500,
     [form.localName, form.latinName]
   );
-
 
   const toastPending = () => {
     Toast.show({
@@ -184,6 +183,54 @@ export default function AddAnimalScreen() {
     }
   };
 
+  const handleDraft = async () => {
+    if (
+      form.latinName === "" ||
+      form.localName === "" ||
+      form.habitat === "" ||
+      form.description === "" ||
+      form.amount === 0 ||
+      form.city === "" ||
+      form.latitude === "" ||
+      form.longitude === ""
+    ) {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Form tidak boleh ada yang kosong",
+      });
+      return;
+    }
+    if (!selectedImage) {
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: "Harap pilih gambar",
+      });
+      return;
+    }
+    setLoading(true);
+    try {
+      await saveToDraft(form, selectedImage);
+      Toast.show({
+        type: "success",
+        text1: "Sukses",
+        text2: "Berhasil Menambahkan Satwa ke Draft",
+      });
+      setForm(initFormAnimal);
+      setSelectedImage(null);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      const err = error as ResponseFail;
+      Toast.show({
+        type: "error",
+        text1: "Gagal",
+        text2: err?.response?.data?.message || "Terjadi kesalahan",
+      });
+    }
+  };
+
   const getLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
@@ -222,7 +269,7 @@ export default function AddAnimalScreen() {
   }
 
   return (
-    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
+    <SafeAreaView>
       <ModalActionImage
         isVisible={isPickImage}
         message="Pilih Aksi Untuk Melanjutkan"
@@ -234,9 +281,9 @@ export default function AddAnimalScreen() {
         }}
         onDelete={selectedImage ? handleDeleteImage : undefined}
       />
-      <KeyboardAvoidingView className=" flex flex-col h-screen">
+      <KeyboardAvoidingView className=" flex flex-col h-screen mt-4">
         <View className="flex flex-row px-4 items-center space-x-2">
-          <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
+          <Text className="text-4xl text-neutral-950" style={OutfitBold}>
             Input Satwa
           </Text>
         </View>
@@ -251,14 +298,17 @@ export default function AddAnimalScreen() {
               className="w-full h-full object-cover"
             />
           </View>
-          <Pressable
+          <TouchableOpacity
             className="w-[40%] bg-custom-1 px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2 self-end"
             onPress={() => setIsPickImage(true)}
           >
-            <Text className="text-sm text-white text-center" style={Inter}>
+            <Text
+              className="text-sm text-white text-center"
+              style={OutfitRegular}
+            >
               {selectedImage ? "Ubah" : "Unggah"} Gambar
             </Text>
-          </Pressable>
+          </TouchableOpacity>
           <View className="flex flex-col">
             <CustomInputText
               label="Nama Lokal"
@@ -294,11 +344,14 @@ export default function AddAnimalScreen() {
                     <View className="flex flex-col space-y-1">
                       <Text
                         className="text-black font-semibold text-base"
-                        style={Inter}
+                        style={OutfitRegular}
                       >
                         {item.localName}
                       </Text>
-                      <Text className="text-neutral-600 text-sm" style={Inter}>
+                      <Text
+                        className="text-neutral-600 text-sm"
+                        style={OutfitRegular}
+                      >
                         {item.latinName}
                       </Text>
                     </View>
@@ -322,14 +375,17 @@ export default function AddAnimalScreen() {
               value={form.habitat}
             />
             <View className="flex flex-col space-y-2 mb-4">
-              <Text className="text-black text-lg font-medium" style={Inter}>
+              <Text
+                className="text-black text-lg font-medium"
+                style={OutfitRegular}
+              >
                 Lokasi
               </Text>
 
               <TextInput
                 className="w-full bg-white border border-neutral-200 rounded-l-lg px-4 py-2 h-12"
                 placeholder={"Masukkan Kota Ditemukan"}
-                style={Inter}
+                style={OutfitRegular}
                 placeholderTextColor={"#a3a3a3"}
                 onChangeText={(value) => setForm({ ...form, city: value })}
                 value={form.city}
@@ -338,7 +394,7 @@ export default function AddAnimalScreen() {
                 <TextInput
                   className="w-[49%] bg-white border border-neutral-200 rounded-lg px-4 py-2 h-12"
                   placeholder={"Latitude"}
-                  style={Inter}
+                  style={OutfitRegular}
                   keyboardType="numbers-and-punctuation"
                   placeholderTextColor={"#a3a3a3"}
                   onChangeText={(value) =>
@@ -349,7 +405,7 @@ export default function AddAnimalScreen() {
                 <TextInput
                   className="w-[49%] bg-white border border-neutral-200 rounded-lg px-4 py-2 h-12"
                   placeholder={"Longitude"}
-                  style={Inter}
+                  style={OutfitRegular}
                   keyboardType="numbers-and-punctuation"
                   placeholderTextColor={"#a3a3a3"}
                   onChangeText={(value) =>
@@ -360,40 +416,40 @@ export default function AddAnimalScreen() {
               </View>
               <View className="flex flex-row justify-between items-center my-2">
                 <View className="h-px w-[30%] bg-neutral-200" />
-                <Text style={Inter}>Atau Gunakan</Text>
+                <Text style={OutfitRegular}>Atau Gunakan</Text>
                 <View className="h-px w-[30%] bg-neutral-200" />
               </View>
               <View className="w-full flex flex-row justify-between mb-4">
-                <Pressable
+                <TouchableOpacity
                   className="bg-custom-success w-[48%] px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2"
                   onPress={isPending ? toastPending : getLocation}
                 >
                   {isPending ? (
                     <ActivityIndicator size="small" color="white" />
                   ) : (
-                    <>
+                    <View className="flex flex-row items-center space-x-1">
                       <Feather name="map-pin" color="white" />
                       <Text
                         className="text-sm text-white text-center"
-                        style={Inter}
+                        style={OutfitRegular}
                       >
                         Lokasi Saat Ini
                       </Text>
-                    </>
+                    </View>
                   )}
-                </Pressable>
-                <Pressable
-                  className="bg-custom-info w-[48%] px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2"
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className="bg-custom-info w-[48%] px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-1"
                   onPress={isPending ? toastPending : () => setIsMapOpen(true)}
                 >
                   <Feather name="map" color="white" />
                   <Text
                     className="text-sm text-white text-center"
-                    style={Inter}
+                    style={OutfitRegular}
                   >
                     Buka Map
                   </Text>
-                </Pressable>
+                </TouchableOpacity>
               </View>
               <CustomInputText
                 label="Deskripsi"
@@ -405,14 +461,28 @@ export default function AddAnimalScreen() {
                 numberOfLines={10}
                 multiline
               />
-              <Pressable
+              <TouchableOpacity
+                className="bg-white border border-custom-1 px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2"
+                onPress={handleDraft}
+              >
+                <Text
+                  className="text-sm text-custom-1 text-center"
+                  style={OutfitRegular}
+                >
+                  Simpan ke Draft
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
                 className="bg-custom-1 px-2 py-2 rounded-lg flex flex-row items-center justify-center h-10 space-x-2"
                 onPress={handleAnimal}
               >
-                <Text className="text-sm text-white text-center" style={Inter}>
+                <Text
+                  className="text-sm text-white text-center"
+                  style={OutfitRegular}
+                >
                   Simpan
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
           <View className="h-96" />

@@ -6,9 +6,14 @@ import {
   ScrollView,
   Pressable,
   Platform,
+  FlatList,
 } from "react-native";
-import { Inter } from "@/constants/Fonts";
-import { Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { OutfitRegular } from "@/constants/Fonts";
+import {
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import { logout } from "@/services/auth";
 import { useEffect, useState } from "react";
@@ -19,11 +24,13 @@ import {
   getSavedProfile,
 } from "@/services/account";
 import ModalActionImage from "@/components/ui/ModalActionImage";
-import Overview from "@/components/ui/OverviewScreen";
+import OverviewCard from "@/components/ui/OverviewScreen";
 import compressImage from "@/utils/compressImage";
 import { ImageResult } from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
 import Toast from "react-native-toast-message";
+import { initOverview, Overview } from "@/models/Overview";
+import { getOverview } from "@/services/overview";
 
 export default function ProfileScreen() {
   useNavigation().setOptions({
@@ -31,8 +38,15 @@ export default function ProfileScreen() {
   });
 
   const [prof, setProf] = useState<SavedProfile>(initSavedProfile);
-  const [selectedImage, setSelectedImage] = useState<ImageResult | null>(null);
   const [isPickImage, setIsPickImage] = useState<boolean>(false);
+  const [overview, setOverview] = useState<Overview>(initOverview);
+  const [loading, setLoading] = useState<boolean>(false);
+  const fetchData = async (key?: Date) => {
+    setLoading(true);
+    const [resOverview] = await Promise.all([getOverview(key)]);
+    setOverview(resOverview.data);
+    setLoading(false);
+  };
 
   const fetchResult = async () => {
     const result = await getSavedProfile();
@@ -48,6 +62,7 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     fetchResult();
+    fetchData();
   }, []);
 
   const handlePickGallery = async () => {
@@ -160,74 +175,81 @@ export default function ProfileScreen() {
         onDelete={prof.phone !== "" ? handleDeleteImage : undefined}
       />
 
-      <ScrollView className="px-4  flex flex-col h-screen space-y-8">
-        <Pressable
-          className="relative w-32  h-32 mt-10 self-center"
-          onPress={() => {
-            setIsPickImage(true);
-          }}
-        >
-          <Image
-            source={
-              prof.picture === ""
-                ? require("@/assets/profile.png")
-                : { uri: prof.picture }
-            }
-            width={49}
-            height={49}
-            className="rounded-full w-full h-full object-cover"
-          />
-          <View className="w-fit h-fit rounded-full bottom-1 right-1 absolute bg-custom-1 z-10 flex items-center justify-center">
-            <Ionicons name="add" color="white" size={24} />
-          </View>
-        </Pressable>
-        <View>
-          <Text
-            className="text-black text-2xl self-center font-semibold text-center"
-            style={Inter}
-          >
-            {prof.name}
-          </Text>
-          <Text
-            className="text-neutral-600 text-base self-center font-medium text-center"
-            style={Inter}
-          >
-            {prof.email}
-          </Text>
-          <Text
-            className="text-neutral-600 text-base self-center font-medium text-center"
-            style={Inter}
-          >
-            +{prof.phone.slice(0, 2)} {prof.phone.slice(2, 5)}-
-            {prof.phone.slice(5, 9)}-{prof.phone.slice(9)}
-          </Text>
-        </View>
-        <View>
-          <Overview />
-        </View>
-        <View className="flex flex-col space-y-4 px-4">
-          {MENUS.map((item, index) => (
+      <FlatList
+        data={[{}]}
+        refreshing={loading}
+        onRefresh={() => fetchData(new Date())}
+        renderItem={() => (
+          <View className="px-4  flex flex-col h-screen space-y-8">
             <Pressable
-              className="flex flex-row items-center"
-              key={index}
+              className="relative w-32  h-32 mt-10 self-center"
               onPress={() => {
-                if (item.onPress) {
-                  item.onPress();
-                }
+                setIsPickImage(true);
               }}
             >
-              <View className="w-[10%]">{item.icon}</View>
-              <Text
-                className="text-base font-normal text-neutral-600 tracking-wide"
-                style={Inter}
-              >
-                {item.name}
-              </Text>
+              <Image
+                source={
+                  prof.picture === ""
+                    ? require("@/assets/profile.png")
+                    : { uri: prof.picture }
+                }
+                width={49}
+                height={49}
+                className="rounded-full w-full h-full object-cover"
+              />
+              <View className="w-fit h-fit rounded-full bottom-1 right-1 absolute bg-custom-1 z-10 flex items-center justify-center">
+                <Ionicons name="add" color="white" size={24} />
+              </View>
             </Pressable>
-          ))}
-        </View>
-        <View className="h-40" />
-      </ScrollView>
+            <View>
+              <Text
+                className="text-black text-2xl self-center font-semibold text-center"
+                style={OutfitRegular}
+              >
+                {prof.name}
+              </Text>
+              <Text
+                className="text-neutral-600 text-base self-center font-medium text-center"
+                style={OutfitRegular}
+              >
+                {prof.email}
+              </Text>
+              <Text
+                className="text-neutral-600 text-base self-center font-medium text-center"
+                style={OutfitRegular}
+              >
+                +{prof.phone.slice(0, 2)} {prof.phone.slice(2, 5)}-
+                {prof.phone.slice(5, 9)}-{prof.phone.slice(9)}
+              </Text>
+            </View>
+            <View>
+              <OverviewCard data={overview} />
+            </View>
+            <View className="flex flex-col space-y-4 px-4">
+              {MENUS.map((item, index) => (
+                <Pressable
+                  className="flex flex-row items-center"
+                  key={index}
+                  onPress={() => {
+                    if (item.onPress) {
+                      item.onPress();
+                    }
+                  }}
+                >
+                  <View className="w-[10%]">{item.icon}</View>
+                  <Text
+                    className="text-base font-normal text-neutral-600 tracking-wide"
+                    style={OutfitRegular}
+                  >
+                    {item.name}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+            <View className="h-40" />
+          </View>
+        )}
+      />
     </SafeAreaView>
   );
 }

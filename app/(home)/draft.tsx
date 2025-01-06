@@ -16,8 +16,8 @@ import {
 import { OutfitBold, OutfitRegular, OutfitSemiBold } from "@/constants/Fonts";
 import { Ionicons } from "@expo/vector-icons";
 import { Card, CardContainer } from "@/components/ui/Card";
-import { useNavigation } from "expo-router";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useNavigation } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { Animal } from "@/models/Animal";
 import { getAllAnimals } from "@/services/animal";
 import { C } from "@/constants/Colors";
@@ -29,55 +29,44 @@ import {
 } from "@/models/Limitation";
 import SpinnerLoading from "@/components/ui/SpinnerLoading";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AnimalDraft, getDrafts } from "@/services/draft";
+import { DraftCard } from "@/components/ui/DraftCard";
 
-export default function HistoryScreen() {
+export default function DraftScreen() {
   useNavigation().setOptions({ headerShown: false });
-  const [data, setData] = useState<Animal[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [checked, setChecked] = useState<boolean>(false);
+  const [data, setData] = useState<AnimalDraft[]>([]);
   const [search, setSearch] = useState<string>("");
-  const [pagination, setPagination] = useState<Pagination>(initPagination);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const fetchData = async (key?: Date) => {
+  const filteredData = data.filter(
+    (item) =>
+      item.key.toLowerCase().includes(search.toLowerCase()) ||
+      item.latinName.toLowerCase().includes(search.toLowerCase()) ||
+      item.localName.toLowerCase().includes(search.toLowerCase()) ||
+      item.habitat.toLowerCase().includes(search.toLowerCase()) ||
+      item.city.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const fetchData = async () => {
     setLoading(true);
     Keyboard.dismiss();
-    const response = await getAllAnimals(
-      search,
-      1,
-      checked ? "editable" : undefined,
-      key
-    );
-    setData(response.data);    
-    setPagination(response.pagination);
+    const response = await getDrafts();
+    setData(response);
     setLoading(false);
   };
 
-  const fetchMore = async () => {
-    if (pagination.currentPage >= pagination.totalPage) return;
-    setLoading(true);
-    const response = await getAllAnimals(
-      search,
-      pagination.currentPage + 1,
-      checked ? "editable" : undefined
-    );
-    const newData = response.data.filter(
-      (newItem) =>
-        !data.some((existingItem) => existingItem.animalId === newItem.animalId)
-    );
-    setData([...data, ...newData]);
-    setPagination(response.pagination);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [checked]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+      return () => {};
+    }, [])
+  );
 
   return (
     <SafeAreaView>
       <View className=" flex flex-col h-screen mt-4">
         <Text className="text-4xl px-4 text-neutral-950" style={OutfitBold}>
-          Riwayat
+          Draft
         </Text>
         <View className="mt-8 px-4 flex flex-row justify-between">
           <TextInput
@@ -90,42 +79,31 @@ export default function HistoryScreen() {
           />
           <Pressable
             className="w-[20%] flex flex-row items-center justify-center bg-custom-1 rounded-r-lg"
-            onPress={() => fetchData()}
+            onPress={() => Keyboard.dismiss()}
           >
             <Ionicons name="search" size={24} color="white" />
           </Pressable>
         </View>
-        <View className="mt-4 px-4 self-end flex flex-row items-center space-x-2">
-          <Text className="text-black" style={OutfitSemiBold}>
-            7 Hari Terakhir
-          </Text>
-          <Switch
-            value={checked}
-            onValueChange={setChecked}
-            trackColor={{ false: "#767577", true: C[1] }}
-          />
-        </View>
         <FlatList
           data={[{}]}
-          refreshing={loading}
-          onEndReached={fetchMore}
           onEndReachedThreshold={0.5}
-          onRefresh={() => fetchData(new Date())}
+          refreshing={false}
+          onRefresh={fetchData}
           renderItem={() => (
             <View className="mt-4 px-4">
-              {!loading && data.length === 0 ? (
+              {filteredData.length === 0 ? (
                 <View className="w-full flex flex-col items-center justify-center">
                   <Text
                     className="text-lg text-neutral-950 font-medium text-center mt-40"
                     style={OutfitRegular}
                   >
-                    Tidak ada hasil
+                    Tidak ada draft
                   </Text>
                 </View>
               ) : null}
               <CardContainer>
-                {data.map((item) => (
-                  <Card key={item.animalId} item={item} />
+                {filteredData.map((item) => (
+                  <DraftCard key={item.key} item={{ ...item }} />
                 ))}
               </CardContainer>
               <View className="h-96" />

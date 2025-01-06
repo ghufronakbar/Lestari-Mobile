@@ -1,5 +1,6 @@
 import { OutfitRegular } from "@/constants/Fonts";
 import { Animal } from "@/models/Animal";
+import { AnimalDraft } from "@/services/draft";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image, Pressable, Text, View } from "react-native";
@@ -10,12 +11,12 @@ export const CardContainer = ({ children }: { children?: React.ReactNode }) => {
   );
 };
 
-export const Card = ({
+export const DraftCard = ({
   item,
   className,
   isPadding = false,
 }: {
-  item: Animal;
+  item: AnimalDraft;
   className?: string;
   isPadding?: boolean;
 }) => {
@@ -26,13 +27,13 @@ export const Card = ({
       } ${className} w-[45vw] h-60 border border-neutral-200 rounded-xl bg-white shadow-sm mb-2 overflow-hidden`}
       onPress={() =>
         router.push({
-          pathname: "/animal/[id]",
-          params: { id: item.animalId },
+          pathname: "/detail-draft",
+          params: { id: item.key },
         })
       }
     >
       <Image
-        source={{ uri: item.image }}
+        source={{ uri: item?.image?.uri }}
         className="w-full h-[60%] object-cover"
       />
       <View className="p-2 flex flex-col">

@@ -1,11 +1,11 @@
 import axiosInstance from "@/config/axiosInstance";
 import { Animal } from "@/models/Animal";
-import { Limitation } from "@/models/Limitation";
+import { Pagination } from "@/models/Limitation";
 import { Response } from "@/models/Response";
 import * as ImagePicker from "expo-image-picker";
 
 interface AnimalResponse extends Response {
-  limitation: Limitation;
+  pagination: Pagination;
   data: Animal[];
 }
 
@@ -13,15 +13,17 @@ type Query = "editable";
 
 export const getAllAnimals = async (
   search: string,
-  limit: number,
-  query?: Query
+  page: number,
+  query?: Query,
+  key?: Date
 ): Promise<AnimalResponse> => {
   try {
     const { data } = await axiosInstance.get<AnimalResponse>(`/animal`, {
       params: {
         search,
-        limit,
+        page,
         query,
+        key,
       },
     });
     return data;
@@ -80,12 +82,11 @@ export const createAnimal = async (
   formData.append("latitude", form.latitude);
   formData.append("amount", form.amount.toString());
   try {
-    const { data } = await axiosInstance.post<Response>("/animal", formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+    const { data } = await axiosInstance.post<Response>("/animal", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return data;
   } catch (error) {
     throw error;
@@ -121,8 +122,8 @@ export const editAnimalImage = async (
       formData,
       {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          "Content-Type": "multipart/form-data",
+        },
       }
     );
     return data;

@@ -1,14 +1,13 @@
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   KeyboardAvoidingView,
   Pressable,
   ActivityIndicator,
   Platform,
 } from "react-native";
-import { Inter } from "@/constants/Fonts";
+import { OutfitRegular } from "@/constants/Fonts";
 import { CustomInputText } from "@/components/ui/CustomInputText";
 import { router, useNavigation } from "expo-router";
 import { useState } from "react";
@@ -21,11 +20,9 @@ import TermsConditions from "@/components/ui/TermsConditions";
 import Toast from "react-native-toast-message";
 import { ResponseFail } from "@/models/Response";
 import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RegisterScreen() {
-  useNavigation().setOptions({
-    headerShown: false,
-  });
   const [form, setForm] = useState<FormReqAccount>(initFormReqAccount);
   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState<boolean>(false);
@@ -81,17 +78,9 @@ export default function RegisterScreen() {
   };
 
   return (
-    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
+    <SafeAreaView>
       <KeyboardAvoidingView className="px-4 flex flex-col h-screen">
-        <View className="flex flex-row items-center space-x-2">
-          <Pressable onPress={() => router.back()}>
-            <Ionicons name="chevron-back" size={24} color="black" />
-          </Pressable>
-          <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
-            Pendaftaran Akun
-          </Text>
-        </View>
-        <ScrollView className="mt-8 space-y-4">
+        <ScrollView className="space-y-4">
           <View className="flex flex-col">
             <CustomInputText
               label="Nama"
@@ -143,7 +132,7 @@ export default function RegisterScreen() {
               className=" mb-4 flex flex-row items-center self-center"
               onPress={() => setIsConfirmOpen(true)}
             >
-              <Text className="text-sm" style={Inter}>
+              <Text className="text-sm" style={OutfitRegular}>
                 Saya menyutujui{" "}
                 <Text className="text-custom-1">syarat dan ketentuan</Text> yang
                 berlaku
@@ -156,7 +145,10 @@ export default function RegisterScreen() {
               {loading ? (
                 <ActivityIndicator size="small" color="white" />
               ) : (
-                <Text className="text-sm text-white text-center" style={Inter}>
+                <Text
+                  className="text-sm text-white text-center"
+                  style={OutfitRegular}
+                >
                   Kirim
                 </Text>
               )}

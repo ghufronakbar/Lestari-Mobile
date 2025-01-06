@@ -1,26 +1,22 @@
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
   KeyboardAvoidingView,
   Pressable,
   ActivityIndicator,
   Platform,
 } from "react-native";
-import { Inter } from "@/constants/Fonts";
+import { OutfitRegular } from "@/constants/Fonts";
 import { CustomInputText } from "@/components/ui/CustomInputText";
 import { router, useNavigation } from "expo-router";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
 import { ResponseFail } from "@/models/Response";
-import { Ionicons } from "@expo/vector-icons";
 import { getLinkForgotPass } from "@/services/account";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ForgotPasswordScreen() {
-  useNavigation().setOptions({
-    headerShown: false,
-  });
   const [email, setEmail] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -61,16 +57,8 @@ export default function ForgotPasswordScreen() {
   };
 
   return (
-    <SafeAreaView style={{ paddingTop: Platform.OS === "android" ? 36 : 0 }}>
+    <SafeAreaView>
       <KeyboardAvoidingView className=" flex flex-col h-screen">
-        <View className="flex px-4  flex-row items-center space-x-2">
-          <Pressable onPress={() => router.back()}>
-            <Ionicons name="chevron-back" size={24} color="black" />
-          </Pressable>
-          <Text className="text-4xl text-neutral-950 font-bold" style={Inter}>
-            Reset Kata Sandi
-          </Text>
-        </View>
         <ScrollView className="mt-8 px-4  space-y-4">
           <View className="flex flex-col">
             <CustomInputText
@@ -87,7 +75,7 @@ export default function ForgotPasswordScreen() {
               {loading ? (
                 <ActivityIndicator size="small" color="white" />
               ) : (
-                <Text className="text-sm text-white text-center" style={Inter}>
+                <Text className="text-sm text-white text-center" style={OutfitRegular}>
                   Kirim
                 </Text>
               )}

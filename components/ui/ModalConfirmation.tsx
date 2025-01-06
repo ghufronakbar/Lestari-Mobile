@@ -71,13 +71,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontFamily: "Outfit-Bold",
     marginBottom: 20,
   },
   message: {
     fontSize: 16,
     color: "gray",
     marginBottom: 20,
+    fontFamily: "Outfit-Regular",
     textAlign: "center",
   },
   buttonContainer: {
@@ -106,6 +107,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
+    fontFamily: "Outfit-Medium",
   },
 });
 
